@@ -125,9 +125,9 @@ def insertAnalysisUnit(conn, collunitid, dthick):
 
 
 def insertChronology(conn, collunitid, agetype, agemodel, ages,
-                     name, default = True,
+                     contactname, default = True,
                      chronologyname = 'Default 210Pb',
-                     dateprepared = datetime.datetime.now.date()):
+                     dateprepared = datetime.datetime.today().date()):
     def cleanage(x):
         try:
             y = float(x)
@@ -136,6 +136,8 @@ def insertChronology(conn, collunitid, agetype, agemodel, ages,
         return y
         
     cleanage = list(map(lambda x: cleanage(x), ages))
+    minage = min([i for i in cleanage if i is not None])
+    maxage = max([i for i in cleanage if i is not None])
     
     cur = conn.cursor()
     addChron = """SELECT ts.insertchronology(_collectionunitid := %(collunitid)s,
@@ -145,10 +147,10 @@ def insertChronology(conn, collunitid, agetype, agemodel, ages,
         _chronologyname := %(chronologyname)s,
         _dateprepared := %(dateprepared)s,
         _agemodel := %(agemodel)s,
-        _ageboundyounger := %(ageyounger)s,
-        _ageboundolder := %(ageolder)s)"""
-    getCont = """SELECT * FROM ndb.contacts WHERE contactname %% %(name)s;"""    
-    cur.execute(getCont, {'name': name})
+        _ageboundyounger := %(maxage)s,
+        _ageboundolder := %(minage)s)"""
+    getCont = """SELECT contactid FROM ndb.contacts WHERE %(contactname)s %% contactname;"""    
+    cur.execute(getCont, {'contactname': contactname[0]})
     contactid = cur.fetchone()[0]
     if agetype == 'cal yr BP':
         agetypeid = 2
@@ -156,11 +158,17 @@ def insertChronology(conn, collunitid, agetype, agemodel, ages,
         agetypeid = 1
     else:
         logging.error("The provided age type is incorrect..")
-    cur.execute(addChron, {'collunitid':collunitid, 'contactid': contactid, 'chronologyname': chronologyname,
-                           'dateprepared': dateprepared, 'agemodel': agemodel})
+    cur.execute(addChron, {'collunitid':collunitid, 'contactid': contactid,
+                           'chronologyname': chronologyname,
+                           'agetype': agetypeid,
+                           'dateprepared': dateprepared, 'agemodel': agemodel,
+                           'maxage': int(maxage), 'minage': int(minage)})
+    chronid = cur.fetchone()[0]
+    return chronid
+
+
+def insertChronControls(conn, uploader):
     
-        
-        
 
 def insertDatasetPI(conn, datasetid, datasetpis):
     cur = conn.cursor()
