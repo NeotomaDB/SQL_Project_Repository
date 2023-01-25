@@ -3,8 +3,8 @@ import sys
 import json
 import psycopg2
 
-from functions import read_csv, validunits, newSite, validAgent, validGeoPol, cleanCol, validCollUnit
-from functions import cleanCol
+from functions import read_csv, cleanCol
+from validators import validunits, newSite, validAgent, validGeoPol, validCollUnit
 
 with open('connect_remote.json') as f:
     data = json.load(f)
@@ -21,9 +21,8 @@ else:
     filenames = glob.glob("data/" + "*.csv")
 
 for filename in filenames:
+    print(filename)
     template = read_csv(filename)
-    del template[0]
-    del template[0]
 
     logfile = []
     testset = {'units': False,
@@ -34,27 +33,31 @@ for filename in filenames:
             'modelername': False}
 
     # Cleaning fields to unique values:
-    sitename = cleanCol('Site name', template)
-    coords = cleanCol('Geographic coordinates (lat, long)', template)
-    geog = cleanCol('Location (country, state/province, etc.)', template)
-    piname = cleanCol('Dataset PI', template)
-    analystname = cleanCol('Analyst (person/lab)', template)
-    modelername = cleanCol('Modeler (person/lab)', template)
+    sitename = cleanCol('Site.name', template)
+    coords = cleanCol('Geographic.coordinates', template)
+    geog = cleanCol('Location', template)
+    piname = cleanCol('Principal.Investigator.s.', template)
+    analystname = cleanCol('Analyst', template)
+    modelername = cleanCol('Modeler', template)
     pubname = cleanCol('Publications', template)
-    collunits = cleanCol('Core number or code', template)
+    collunits = cleanCol('Core.number.or.code', template)
 
-    unitcols = {'ddunits' : ['Dry Density Units'],
-                'cdmunits' : ['Cumulative dry mass units'],
-                'riunits' : ['Total 210Pb Alpha [synonym Total 210 Po] Units', 'Error (total 210Pb Alpha) Units', 'Total 210Pb Gamma Units',
-                            'Error (total 210Pb Gamma) Units', '214Pb Units', 'Error (214Pb) Units', '214Bi Units', 'Error (214Bi) Units', 
-                            '137Cs Units', 'Error (137Cs) Units', 'Supported 210Pb Units', 'Error (Supported 210Pb) 1SD Units', 
-                            'Unsupported 210Pb Units','Error (Unsupported 210Pb) 1SD Units'],
-                'accum' : ['DMAR Units', 'Error (DMAR) Units'],
-                'timeunits' : ['Assigned 137Cs Date Units', '210Pb Date Units', 'Error (210Pb Date) 1SD Units'],
-                'precision' : ['Coordinate precision'],
-                'model': ['210 Lead Model'],
-                'estimate': ['Method for estimating supported 210Pb'],
-                'position': ['Depth position']}
+    unitcols = {'ddunits' : ['Dry.Density.Units'],
+                'cdmunits' : ['Cumulative.dry.mass.units'],
+                'riunits' : ['Total.210Pb.Alpha..synonym.Total.210Po..Units',
+                             'Error..total.210Pb.alpha..units',
+                             'Total.210Pb.Gamma.Units',
+                             'Error..total.210Pb.Gamma..Units', 'X214Pb.Units',
+                             'Error..214Pb..Units', 'X214Bi.Units',
+                             'Error..214Bi..Units', 'X137Cs.Units',
+                             'Error..137Cs..Units', 'Supported.210Pb.Units', 'Error..Supported.210Pb..1SD.Units', 
+                             'Unsupported.210Pb.Units','Error..Unsupported.210Pb..1SD.Units'],
+                'accum' : ['DMAR.Units', 'Error..DMAR..Units'],
+                'timeunits' : ['Assigned.137Cs.Date.Units', 'X210Pb.Date.Units', 'Error..210Pb.Date..1SD.Units'],
+                'precision' : ['Coordinate.precision'],
+                'model': ['X210.LeadModel'],
+                'estimate': ['Method.for.estimating.supported.210Pb'],
+                'position': ['Depth.position']}
 
     units = {'ddunits': ['g/cm3'],
             'cdmunits': ['g/cm2'],
@@ -67,7 +70,6 @@ for filename in filenames:
             'position': ['Top', 'Mid', 'Bottom']}
 
     logfile.append(f"Printing report for {filename}")
-
 
     # Testing Data Units:
     unittest = validunits(template, unitcols, units)
@@ -97,13 +99,20 @@ for filename in filenames:
         # We've got an existing site but the collunit does not exist at the site:
         logfile.append('The site exists, but no collection unit with this name exists.')
         logfile.append(f"Existing collection units for this site are: {nameCheck['collunits']}")
+    if nameCheck['pass'] is False and len(nameCheck['collunits']) == 0:
+        if len(coords) > 1:
+            logfile.append('There is more than one set of coordinates associated with this site.')
+        else:
+            logfile.append('There are no coordinates associated with this file.')
 
 
     ########### Geopolitical unit:
     logfile.append('=== Checking Against Geopolitical Units ===')
     namecheck = validGeoPol(cur, geog, coords)
-    if namecheck['pass'] is False:
+    if namecheck['pass'] is False and len(namecheck) > 0:
         logfile.append(f"Your written location does not match cleanly. Coordinates suggest \'{namecheck['placename']}\'")
+    elif namecheck['pass'] is False and len(namecheck) == 0:
+        logfile.append(f"Your written location does not match cleanly. No coordinates were provided.")
     else:
         testset['geopol'] = True
 
@@ -150,7 +159,7 @@ for filename in filenames:
         else:
             allnames.append(True)
 
-    with open(args[1] + filename + '.log', 'a') as writer:
+    with open(filename + '.log', 'a') as writer:
         for i in logfile:
             writer.write(i)
             writer.write('\n')
