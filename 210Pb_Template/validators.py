@@ -1,4 +1,14 @@
 def validCollUnit(cur, coords, collunits):
+    """Is the collection unit valid as a new unit?
+
+    Args:
+        cur (_psycopg2.extensions.connection_): _A connection to a valid Neotoma database (either local or remote)_
+        coords (_list_): _A list containing the coordinates for the site. We expect only a single element, a string lat/long pair._
+        collunits (_list_): _A list containing unique collection unit names._
+
+    Returns:
+        _dict_: _A dict object with properties `pass` (boolean) and `collunits` (a list of valid collection units at the site). _
+    """    
     valid = False
     if len(coords) == 1:
         coords = coords[0]
@@ -29,6 +39,15 @@ def validCollUnit(cur, coords, collunits):
 
 
 def validAgent(cur, name):
+    """_Is the contact name valid and in the database?_
+
+    Args:
+        cur (_psycopg2.extensions.connection_): _A connection to a valid Neotoma database (either local or remote)_
+        name (_list_): _A list containing valid agent/contact names._
+
+    Returns:
+        _dict_: _A dict with two parameters, `pass` (boolean) and `name`, a list of valid names with approximate matches._
+    """
     nameresults = []
     if len(name) == 1:
         nameQuery = """
@@ -47,6 +66,16 @@ def validAgent(cur, name):
 
 
 def validGeoPol(cur, geopolitical, coords):
+    """_Is the listed geopolitical unit valid?_
+
+    Args:
+        cur (_psycopg2.extensions.connection_): _A connection to a valid Neotoma database (either local or remote)_
+        geopolitical (_list_): _The set of valid geopolitical unit names assigned to the site._
+        coords (_list_): _A list containing the coordinates for the site. We expect only a single element, a string lat/long pair._
+
+    Returns:
+        _dict_: _A dict with properties pass, fid (the unique geoplacename identifier) and the valid `placename`._
+    """
     nameresults = []
     location = []
     if len(geopolitical) == 1:
@@ -84,7 +113,17 @@ def validGeoPol(cur, geopolitical, coords):
     return result
 
 
-def validunits (template, unitcols, units) :
+def validunits (template, unitcols, units):
+    """_Are the units provided valid based on defined unit names?_
+
+    Args:
+        template (_list_): _The csv file content, as a list._
+        unitcols (_dict_): _The names of each set of columns listing units in the file, with a key linked to the `units` column._
+        units (_dict_): _Acceptable units for each data column type._
+
+    Returns:
+        _list_: _A list of columns with invalid units._
+    """    
     invalid = []
     for i in unitcols.keys():
         for j in unitcols[i]:
@@ -97,6 +136,15 @@ def validunits (template, unitcols, units) :
 
 
 def newSite(cur, coords):
+    """_Is the site a valid new site?_
+
+    Args:
+        cur (_psycopg2.extensions.connection_): _A connection to a valid Neotoma database (either local or remote)_
+        coords (_list_): _A list containing the coordinates for the site. We expect only a single element, a string lat/long pair._
+
+    Returns:
+        _dict_: _A dict object with two properties, the boolean `pass` and a `sitelist` with all close sites._
+    """
     # Need to evaluate whether it's a new site, or not.
     sitelist = []
     if len(coords) == 1:
