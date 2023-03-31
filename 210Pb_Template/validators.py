@@ -1,3 +1,5 @@
+import datetime
+
 def validCollUnit(cur, coords, collunits):
     """Is the collection unit valid as a new unit?
 
@@ -56,7 +58,7 @@ def validAgent(cur, name):
             WHERE %(name)s %% ct.contactname"""
         cur.execute(nameQuery, {'name': name[0]})
         nameresults = cur.fetchall()
-        if any([i[0] == name for i in nameresults]):
+        if any([i[0] == name[0] for i in nameresults]):
             result = {'pass': True, 'name': nameresults}
         else:
             result = {'pass': False, 'name': [i[0] for i in nameresults]}
@@ -135,12 +137,17 @@ def validunits (template, unitcols, units):
     return invalid
 
 
-def newSite(cur, coords):
+def validSite(cur, coords):
     """_Is the site a valid new site?_
-
+    
+    The function accepts a set of coordinates, a site name, and returns a dict with the properties:
+        * `pass`: Did the operation work as expected (a site is matched and a valid siteid returned).
+        * `sitelist`: A list of site dicts including {'siteid', 'sitename', 'lat', 'long', 'distance'}
+    
     Args:
         cur (_psycopg2.extensions.connection_): _A connection to a valid Neotoma database (either local or remote)_
         coords (_list_): _A list containing the coordinates for the site. We expect only a single element, a string lat/long pair._
+        sitename (_string_): The unique site name for the record.
 
     Returns:
         _dict_: _A dict object with two properties, the boolean `pass` and a `sitelist` with all close sites._
@@ -159,17 +166,37 @@ def newSite(cur, coords):
             ORDER BY dist;"""
         cur.execute(closeSite, coordDict)
         aa = cur.fetchall()
-        if len(aa) > 1:
+        if len(aa) > 0:
             for i in aa:
                 site = {'id': str(i[0]), 'name': i[1], 'coordlo': str(i[2]), 'coordla': str(i[3]), 'distance (m)': round(i[13], 0)}
+                valid = False
                 sitelist.append(site)
-            valid = False
-        elif len(aa) == 1:
-            valid = True
-            sitelist = [{'id': str(aa[0][0]), 'name': aa[0][1], 'coordlo': str(aa[0][2]), 'coordla': str(aa[0][3]), 'distance (m)': round(aa[0][13], 0)}]
         else:
             valid = True
             sitelist = [{'id': None, 'name': None, 'coordlo': None, 'coordla': None, 'distance (m)': None}]
     else:
         valid = False
     return {'pass': valid, 'sitelist': sitelist}
+
+
+def validCollDate(colldate):
+    try:
+        newdate = datetime.datetime.strptime(colldate[0], '%Y-%m-%d').date()
+    except ValueError:
+        return {'valid': False, 'date': 'Expected date format is YYYY-mm-dd'}
+    return {'valid': True, 'date': newdate}
+
+
+def validHorizon(depths, horizon):
+    if len(horizon) == 1:
+        matchingdepth = [i == horizon[0] for i in depths]
+        if any(matchingdepth):
+            valid = True
+            hmatch = { 'index': next(i for i,v in enumerate(matchingdepth) if v) }
+        else:
+            valid = False
+            hmatch = { 'index': -1 }
+    else:
+        valid = False
+        hmatch = { 'index': None }
+    return {'valid': valid, 'index': hmatch}

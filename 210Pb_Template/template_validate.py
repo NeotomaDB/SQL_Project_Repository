@@ -1,10 +1,17 @@
+"""_Validate 210Pb csv Files_
+   Assumes there is a `data` folder from which the python script is run.
+   The script obtains all `csv` files in ./data and then reads through
+   each of them, validating each field to ensure they are acceptable for
+   valid upload.
+"""
 import glob
 import sys
 import json
 import psycopg2
+import re
 
 from functions import read_csv, cleanCol
-from validators import validunits, newSite, validAgent, validGeoPol, validCollUnit
+from validators import validunits, validSite, validAgent, validGeoPol, validCollUnit, validHorizon, validCollDate
 
 with open('connect_remote.json') as f:
     data = json.load(f)
@@ -30,7 +37,8 @@ for filename in filenames:
             'geopol': False,
             'piname': False,
             'analystname': False,
-            'modelername': False}
+            'modelername': False,
+            'datinghorizon': False}
 
     # Cleaning fields to unique values:
     sitename = cleanCol('Site.name', template)
@@ -41,6 +49,9 @@ for filename in filenames:
     modelername = cleanCol('Modeler', template)
     pubname = cleanCol('Publications', template)
     collunits = cleanCol('Core.number.or.code', template)
+    depths = cleanCol('Depth', template)
+    datinghorizon = cleanCol('X210Pb.dating.horizon', template)
+    colldate = cleanCol('Date.of.core.collection', template)
 
     unitcols = {'ddunits' : ['Dry.Density.Units'],
                 'cdmunits' : ['Cumulative.dry.mass.units'],
@@ -69,7 +80,7 @@ for filename in filenames:
             'estimate': ['asymptote of alpha', 'gamma point-subtraction', 'gamma average'],
             'position': ['Top', 'Mid', 'Bottom']}
 
-    logfile.append(f"Printing report for {filename}")
+    logfile.append(f"Report for {filename}")
 
     # Testing Data Units:
     unittest = validunits(template, unitcols, units)
@@ -78,19 +89,30 @@ for filename in filenames:
         for i in unittest:
             logfile.append('Invalid units within the template column \'%s\'' % i)
     else:
-        logfile.append('No unit mismatch found.')
+        logfile.append('✔  No unit mismatch found.')
         testset['units'] = True
 
-    # Testing site coordinates:
+    ########### Testing site coordinates:
     logfile.append('=== Checking Against Current Sites ===')
-    sitecheck = newSite(cur, coords)
+    sitecheck = validSite(cur, coords)
+    if re.search('.+,.*-.+', coords[0]) is None:
+        logfile.append('We expect longitude to be negative (western hemisphere). Coordinates should have a negative longitude value.')
     if sitecheck['pass'] is False and len(sitecheck['sitelist']) > 0:
         logfile.append('Multiple sites exist close to the requested site.')
         for i in sitecheck['sitelist']:
-            logfile.append(f"siteid: {i['id']};  sitename: {i['name']:<25}; distance (m): {i['distance (m)']:<7} coords: [{i['coordlo']}, {i['coordlo']}]")
+            logfile.append(f"siteid: {i['id']};  sitename: {i['name']:<25}; distance (m): {i['distance (m)']:<7} coords: [{i['coordla']}, {i['coordlo']}]")
     else:
         testset['sites'] = True
+        logfile.append('✔  Valid site, no close site exists.')
 
+    ########### Collection Date
+    logfile.append('=== Checking Against Collection Date Format ===')
+    dateCheck = validCollDate(colldate = colldate)
+    if dateCheck['valid']:
+        logfile.append(f"✔  Date {dateCheck['date']} looks good!")
+    else:
+        logfile.append("Date should be formatted as YYYY-mm-dd.")
+    
     ########### Collection Units
     logfile.append('=== Checking Against Collection Units ===')
     nameCheck = validCollUnit(cur, coords, collunits)
@@ -110,37 +132,42 @@ for filename in filenames:
     logfile.append('=== Checking Against Geopolitical Units ===')
     namecheck = validGeoPol(cur, geog, coords)
     if namecheck['pass'] is False and len(namecheck) > 0:
-        logfile.append(f"Your written location does not match cleanly. Coordinates suggest \'{namecheck['placename']}\'")
+        logfile.append(f"Your written location -- {geog[0]} -- does not match cleanly. Coordinates suggest \'{namecheck['placename']}\'")
     elif namecheck['pass'] is False and len(namecheck) == 0:
         logfile.append(f"Your written location does not match cleanly. No coordinates were provided.")
     else:
         testset['geopol'] = True
+        logfile.append('✔  Looks good!')
 
     ########### PI names:
     logfile.append('=== Checking Against Dataset PI Name ===')
+    logfile.append(f"*** PI: {piname} ***")
     namecheck = validAgent(cur, piname)
     if namecheck['pass'] is False:
         if namecheck['name'] is None:
             logfile.append(f"The PI name must be a single repeated name.")
         else:
-            logfile.append(f"There is no exact name match in the database. Please either enter a new name or select:")
+            logfile.append(f"There is no exact name match for {piname[0]} in the database. Please either enter a new name or select:")
             for i in namecheck['name']:
                 logfile.append(f"Close name match \'{i}\'")
     else:
         testset['piname'] = True
+        logfile.append(f"✔  The name {piname} matched!")
 
     ########### Age Modeller Name
     logfile.append('=== Checking Against Age Modeller Name(s) ===')
+    logfile.append(f"*** Age Modeller: {modelername} ***")
     namecheck = validAgent(cur, modelername)
     if namecheck['pass'] is False:
         if namecheck['name'] is None:
             logfile.append(f"The Age Modeller name must be a single repeated name.")
         else:
-            logfile.append(f"There is no exact name match in the database. Please either enter a new name or select:")
+            logfile.append(f"There is no exact name match for {modelername[0]} in the database. Please either enter a new name or select:")
             for i in namecheck['name']:
                 logfile.append(f"Close name match \'{i}\'")
     else:
         testset['modellername'] = True
+        logfile.append(f"✔ The name {modelername} matched!")
 
     ########### Analyst Name
     logfile.append('=== Checking Against Analyst Name(s) ===')
@@ -153,13 +180,26 @@ for filename in filenames:
             if namecheck['name'] is None:
                 logfile.append(f"The Age Modeller name must be a single repeated name.")
             else:
-                logfile.append(f"There is no exact name match in the database. Please either enter a new name or select:")
-                for i in namecheck['name']:
-                    logfile.append(f"Close name match \'{i}\'")
+                logfile.append(f"There is no exact name match for {i} in the database. Please either enter a new name or select:")
+                for j in namecheck['name']:
+                    logfile.append(f"Close name match \'{j}\'")
         else:
             allnames.append(True)
+            logfile.append(f"✔  The name {i} matched!")
 
-    with open(filename + '.log', 'a') as writer:
+    ########### Make sure the dating horizon is in the analysis units:
+    logfile.append('=== Checking the Dating Horizon is Valid ===')
+    horizoncheck = validHorizon(depths, datinghorizon)
+    if horizoncheck['valid']:
+        logfile.append("✔  The dating horizon is in the reported depths.")
+    else:
+        if horizoncheck['index'] is None:
+            logfile.append("Multiple dating horizons are reported.")
+        else:
+            logfile.append("There is no depth entry for the dating horizon in the 'depths' column.")
+    
+    ########### Write to log.
+    with open(filename + '.log', 'w') as writer:
         for i in logfile:
             writer.write(i)
             writer.write('\n')
