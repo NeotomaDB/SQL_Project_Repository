@@ -1,4 +1,4 @@
-def getAgent(cur, agentname):
+def validAgent(cur, agentname):
     """_Get user agent or contact from Neotoma_
 
     Args:

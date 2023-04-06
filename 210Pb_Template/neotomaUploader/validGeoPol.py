@@ -26,7 +26,7 @@ def validGeoPol(cur, geopolitical, coords):
         ingadm = """
             SELECT ga.fid, ga.compoundname
             FROM   ap.gadm_410 AS ga
-            WHERE ST_Intersects(ga.geog, ST_Point(%(long)s, %(lat)s, 4326));"""
+            WHERE ST_Intersects(ga.geom, ST_Point(%(long)s, %(lat)s, 4326));"""
         cur.execute(ingadm, coordDict)
         location = cur.fetchall()
     elif len(coords) == 0:

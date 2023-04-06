@@ -1,5 +1,3 @@
-import logging
-
 def insertSite(cur, sitename, coords):
     """_Insert a site to Neotoma_
 
