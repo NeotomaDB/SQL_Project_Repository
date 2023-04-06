@@ -13,3 +13,4 @@ from .validSite import validSite
 from .validCollUnit import validCollUnit
 from .validGeoPol import validGeoPol
 from .validHorizon import validHorizon
+from .hashFile import hashFile
