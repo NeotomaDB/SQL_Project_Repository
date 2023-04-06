@@ -1,2 +1,14 @@
 
 connect_remote.json
+
+210Pb_Template/template.log
+
+geospatial/gadm_410-gpkg.zip
+
+geospatial/gadm_410.gpkg
+
+210Pb_Template/neotomaUploader/.venv/
+
+210Pb_Template/data/
+
+210Pb_Template/neotomaUploader/__pycache__/
