@@ -9,9 +9,7 @@ import sys
 import json
 import psycopg2
 import re
-
-from functions import read_csv, cleanCol
-from validators import validunits, validSite, validAgent, validGeoPol, validCollUnit, validHorizon, validCollDate
+import neotomaUploader as nu
 
 with open('connect_remote.json') as f:
     data = json.load(f)
@@ -29,29 +27,30 @@ else:
 
 for filename in filenames:
     print(filename)
-    template = read_csv(filename)
+    template = nu.read_csv(filename)
 
     logfile = []
-    testset = {'units': False,
+    testset = { 'units': False,
             'sites': False,
             'geopol': False,
+            'date': False,
             'piname': False,
             'analystname': False,
             'modelername': False,
             'datinghorizon': False}
 
     # Cleaning fields to unique values:
-    sitename = cleanCol('Site.name', template)
-    coords = cleanCol('Geographic.coordinates', template)
-    geog = cleanCol('Location', template)
-    piname = cleanCol('Principal.Investigator.s.', template)
-    analystname = cleanCol('Analyst', template)
-    modelername = cleanCol('Modeler', template)
-    pubname = cleanCol('Publications', template)
-    collunits = cleanCol('Core.number.or.code', template)
-    depths = cleanCol('Depth', template)
-    datinghorizon = cleanCol('X210Pb.dating.horizon', template)
-    colldate = cleanCol('Date.of.core.collection', template)
+    sitename = nu.cleanCol('Site.name', template)
+    coords = nu.cleanCol('Geographic.coordinates', template)
+    geog = nu.cleanCol('Location', template)
+    piname = nu.cleanCol('Principal.Investigator.s.', template)
+    analystname = nu.cleanCol('Analyst', template)
+    modelername = nu.cleanCol('Modeler', template)
+    pubname = nu.cleanCol('Publications', template)
+    collunits = nu.cleanCol('Core.number.or.code', template)
+    depths = nu.cleanCol('Depth', template)
+    datinghorizon = nu.cleanCol('X210Pb.dating.horizon', template)
+    colldate = nu.cleanCol('Date.of.core.collection', template)
 
     unitcols = {'ddunits' : ['Dry.Density.Units'],
                 'cdmunits' : ['Cumulative.dry.mass.units'],
@@ -83,39 +82,26 @@ for filename in filenames:
     logfile.append(f"Report for {filename}")
 
     # Testing Data Units:
-    unittest = validunits(template, unitcols, units)
+    unittest = nu.validUnits(template, unitcols, units)
     logfile.append('=== Checking Template Unit Definitions ===')
-    if len(unittest) > 0:
-        for i in unittest:
-            logfile.append('Invalid units within the template column \'%s\'' % i)
-    else:
-        logfile.append('✔  No unit mismatch found.')
-        testset['units'] = True
+    testset['units'] = unittest['pass']
+    logfile = logfile + unittest['message']
 
     ########### Testing site coordinates:
     logfile.append('=== Checking Against Current Sites ===')
-    sitecheck = validSite(cur, coords)
-    if re.search('.+,.*-.+', coords[0]) is None:
-        logfile.append('We expect longitude to be negative (western hemisphere). Coordinates should have a negative longitude value.')
-    if sitecheck['pass'] is False and len(sitecheck['sitelist']) > 0:
-        logfile.append('Multiple sites exist close to the requested site.')
-        for i in sitecheck['sitelist']:
-            logfile.append(f"siteid: {i['id']};  sitename: {i['name']:<25}; distance (m): {i['distance (m)']:<7} coords: [{i['coordla']}, {i['coordlo']}]")
-    else:
-        testset['sites'] = True
-        logfile.append('✔  Valid site, no close site exists.')
+    sitecheck = nu.validSite(cur, coords, hemisphere = ["NW"], sitename = sitename[0])
+    testset['sites'] = sitecheck['pass']
+    logfile = logfile + sitecheck['message']
 
     ########### Collection Date
     logfile.append('=== Checking Against Collection Date Format ===')
-    dateCheck = validCollDate(colldate = colldate)
-    if dateCheck['valid']:
-        logfile.append(f"✔  Date {dateCheck['date']} looks good!")
-    else:
-        logfile.append("Date should be formatted as YYYY-mm-dd.")
+    dateCheck = nu.validDate(date = colldate, format = '%Y-%m-%d')
+    logfile = logfile + dateCheck['message']
+    testset['date'] = dateCheck['pass']
     
     ########### Collection Units
     logfile.append('=== Checking Against Collection Units ===')
-    nameCheck = validCollUnit(cur, coords, collunits)
+    nameCheck = nu.validCollUnit(cur, coords, collunits)
 
     if testset['sites'] is True and nameCheck['pass'] is False:
         # We've got an existing site but the collunit does not exist at the site:
@@ -127,10 +113,9 @@ for filename in filenames:
         else:
             logfile.append('There are no coordinates associated with this file.')
 
-
     ########### Geopolitical unit:
     logfile.append('=== Checking Against Geopolitical Units ===')
-    namecheck = validGeoPol(cur, geog, coords)
+    namecheck = nu.validGeoPol(cur, geog, coords)
     if namecheck['pass'] is False and len(namecheck) > 0:
         logfile.append(f"Your written location -- {geog[0]} -- does not match cleanly. Coordinates suggest \'{namecheck['placename']}\'")
     elif namecheck['pass'] is False and len(namecheck) == 0:
@@ -141,55 +126,22 @@ for filename in filenames:
 
     ########### PI names:
     logfile.append('=== Checking Against Dataset PI Name ===')
-    logfile.append(f"*** PI: {piname} ***")
-    namecheck = validAgent(cur, piname)
-    if namecheck['pass'] is False:
-        if namecheck['name'] is None:
-            logfile.append(f"The PI name must be a single repeated name.")
-        else:
-            logfile.append(f"There is no exact name match for {piname[0]} in the database. Please either enter a new name or select:")
-            for i in namecheck['name']:
-                logfile.append(f"Close name match \'{i}\'")
-    else:
-        testset['piname'] = True
-        logfile.append(f"✔  The name {piname} matched!")
+    namecheck = nu.validAgent(cur, piname)
+    logfile = logfile + namecheck['message']
 
     ########### Age Modeller Name
     logfile.append('=== Checking Against Age Modeller Name(s) ===')
-    logfile.append(f"*** Age Modeller: {modelername} ***")
-    namecheck = validAgent(cur, modelername)
-    if namecheck['pass'] is False:
-        if namecheck['name'] is None:
-            logfile.append(f"The Age Modeller name must be a single repeated name.")
-        else:
-            logfile.append(f"There is no exact name match for {modelername[0]} in the database. Please either enter a new name or select:")
-            for i in namecheck['name']:
-                logfile.append(f"Close name match \'{i}\'")
-    else:
-        testset['modellername'] = True
-        logfile.append(f"✔ The name {modelername} matched!")
+    namecheck = nu.validAgent(cur, modelername)
+    logfile = logfile + namecheck['message']
 
     ########### Analyst Name
     logfile.append('=== Checking Against Analyst Name(s) ===')
-    allnames = []
-    for i in analystname:
-        logfile.append(f"*** Analyst: {i} ***")
-        namecheck = validAgent(cur, [i])
-        if namecheck['pass'] is False:
-            allnames.append(False)
-            if namecheck['name'] is None:
-                logfile.append(f"The Age Modeller name must be a single repeated name.")
-            else:
-                logfile.append(f"There is no exact name match for {i} in the database. Please either enter a new name or select:")
-                for j in namecheck['name']:
-                    logfile.append(f"Close name match \'{j}\'")
-        else:
-            allnames.append(True)
-            logfile.append(f"✔  The name {i} matched!")
+    namecheck = nu.validAgent(cur, analystname)
+    logfile = logfile + namecheck['message']
 
     ########### Make sure the dating horizon is in the analysis units:
     logfile.append('=== Checking the Dating Horizon is Valid ===')
-    horizoncheck = validHorizon(depths, datinghorizon)
+    horizoncheck = nu.validHorizon(depths, datinghorizon)
     if horizoncheck['valid']:
         logfile.append("✔  The dating horizon is in the reported depths.")
     else:

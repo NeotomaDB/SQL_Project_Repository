@@ -87,7 +87,7 @@ uploader['chronology'] = insertChronology(cur = cur,
                                           chronologyname = 'Default 210Pb')
 
 logfile.append('=== Inserting Chroncontrol ===')
-uploader['chroncontrol'] = insertChrocontrol(cur = cur, 
+uploader['chroncontrol'] = insertChroncontrol(cur = cur, 
                                           collunitid = uploader['collunitid'],
                                           agetype = agetype[1], 
                                           agemodel = agemodel[0],
@@ -109,3 +109,7 @@ insertSamples(cur, ts.insertsample
 ts.insertsampleanalyst
 ts.insertsampleage
 ts.insertdata
+
+conn.commit()
+
+conn.rollback()
