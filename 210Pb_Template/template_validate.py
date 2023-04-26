@@ -8,7 +8,6 @@ import glob
 import sys
 import json
 import psycopg2
-import re
 import neotomaUploader as nu
 
 with open('connect_remote.json') as f:
@@ -29,16 +28,18 @@ for filename in filenames:
     
     print(filename)
     logfile = []
-    
+
     hashcheck = nu.hashFile(filename)
-    logfile = logfile + hashcheck['message']
+    filecheck = nu.checkFile(filename)
+    logfile = logfile + hashcheck['message'] + filecheck['message']
     
-    if hashcheck['pass']:
-        print("  - File hasn't changed since last validation.")
+    if hashcheck['pass'] and filecheck['pass']:
+       print("  - File is correct and hasn't changed since last validation.")
     else:
         template = nu.read_csv(filename)
         testset = { 'units': False,
                 'sites': False,
+                'colunits': False,
                 'geopol': False,
                 'date': False,
                 'piname': False,
@@ -86,8 +87,6 @@ for filename in filenames:
                 'estimate': ['asymptote of alpha', 'gamma point-subtraction', 'gamma average'],
                 'position': ['Top', 'Mid', 'Bottom']}
 
-        logfile.append(f"Report for {filename}")
-
         # Testing Data Units:
         unittest = nu.validUnits(template, unitcols, units)
         logfile.append('=== Checking Template Unit Definitions ===')
@@ -109,27 +108,14 @@ for filename in filenames:
         ########### Collection Units
         logfile.append('=== Checking Against Collection Units ===')
         nameCheck = nu.validCollUnit(cur, coords, collunits)
-
-        if testset['sites'] is True and nameCheck['pass'] is False:
-            # We've got an existing site but the collunit does not exist at the site:
-            logfile.append('The site exists, but no collection unit with this name exists.')
-            logfile.append(f"Existing collection units for this site are: {nameCheck['collunits']}")
-        if nameCheck['pass'] is False and len(nameCheck['collunits']) == 0:
-            if len(coords) > 1:
-                logfile.append('There is more than one set of coordinates associated with this site.')
-            else:
-                logfile.append('There are no coordinates associated with this file.')
+        logfile = logfile + nameCheck['message']
+        testset['colunits'] = nameCheck['pass']
 
         ########### Geopolitical unit:
         logfile.append('=== Checking Against Geopolitical Units ===')
         namecheck = nu.validGeoPol(cur, geog, coords)
-        if namecheck['pass'] is False and len(namecheck) > 0:
-            logfile.append(f"Your written location -- {geog[0]} -- does not match cleanly. Coordinates suggest \'{namecheck['placename']}\'")
-        elif namecheck['pass'] is False and len(namecheck) == 0:
-            logfile.append(f"Your written location does not match cleanly. No coordinates were provided.")
-        else:
-            testset['geopol'] = True
-            logfile.append('✔  Looks good!')
+        logfile = logfile + namecheck['message']
+        testset['geopol'] = namecheck['pass']
 
         ########### PI names:
         logfile.append('=== Checking Against Dataset PI Name ===')
@@ -149,16 +135,11 @@ for filename in filenames:
         ########### Make sure the dating horizon is in the analysis units:
         logfile.append('=== Checking the Dating Horizon is Valid ===')
         horizoncheck = nu.validHorizon(depths, datinghorizon)
-        if horizoncheck['valid']:
-            logfile.append("✔  The dating horizon is in the reported depths.")
-        else:
-            if horizoncheck['index'] is None:
-                logfile.append("Multiple dating horizons are reported.")
-            else:
-                logfile.append("There is no depth entry for the dating horizon in the 'depths' column.")
+        testset['datinghorizon'] = horizoncheck['pass']
+        logfile = logfile + horizoncheck['message']
         
         ########### Write to log.
-        with open(filename + '.log', 'w') as writer:
+        with open(filename + '.log', 'w', encoding = "utf-8") as writer:
             for i in logfile:
                 writer.write(i)
                 writer.write('\n')

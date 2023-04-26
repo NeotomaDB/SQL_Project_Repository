@@ -2,6 +2,7 @@ __version__ = '0.1.0'
 
 import datetime
 import logging
+import itertools
 
 from .cleanCol import cleanCol
 from .insertSite import insertSite
@@ -14,3 +15,7 @@ from .validCollUnit import validCollUnit
 from .validGeoPol import validGeoPol
 from .validHorizon import validHorizon
 from .hashFile import hashFile
+from .checkFile import checkFile
+from .insertGeoPol import insertGeoPol
+from .insertCollUnit import insertCollUnit
+

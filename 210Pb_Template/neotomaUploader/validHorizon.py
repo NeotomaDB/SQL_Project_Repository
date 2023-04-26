@@ -8,15 +8,24 @@ def validHorizon(depths, horizon):
     Returns:
         _dict_: _A dict with the validity and an index of the matched depth._
     """
+    response = {'pass': False,
+                'index': [],
+                'message': []}
     if len(horizon) == 1:
         matchingdepth = [i == horizon[0] for i in depths]
         if any(matchingdepth):
-            valid = True
-            hmatch = { 'index': next(i for i,v in enumerate(matchingdepth) if v) }
+            response['pass'] = True
+            response['index'] = next(i for i,v in enumerate(matchingdepth) if v)
+            response['message'].append("✔  The dating horizon is in the reported depths.")
         else:
-            valid = False
-            hmatch = { 'index': -1 }
+            response['pass'] = False
+            response['index'] = -1
+            response['message'].append("✗  There is no depth entry for the dating horizon in the 'depths' column.")
     else:
-        valid = False
-        hmatch = { 'index': None }
-    return {'valid': valid, 'index': hmatch}
+        response['pass'] = False
+        response['index'] = None
+        if len(horizon) > 1:
+            response['message'].append("✗  Multiple dating horizons are reported.")
+        else:
+            response['message'].append("✗  No dating horizon is reported.")
+    return response

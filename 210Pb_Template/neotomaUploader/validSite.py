@@ -46,9 +46,9 @@ def validSite(cur, coords, hemisphere, sitename):
         response['message'].append('✗ Latitude and longitude do not match the expected hemispheres.')
     closeSite = """
         SELECT st.*,
-            ST_Centroid(st.geog) <-> ST_Point(%(long)s, %(lat)s, 4326) AS dist
+            ST_SetSRID(ST_Centroid(st.geog::geometry), 4326)::geography <-> ST_SetSRID(ST_Point(%(long)s, %(lat)s), 4326)::geography AS dist
         FROM   ndb.sites AS st
-        WHERE ST_Centroid(st.geog) <-> ST_Point(%(long)s, %(lat)s, 4326) < 10000
+        WHERE ST_SetSRID(ST_Centroid(st.geog::geometry), 4326)::geography <-> ST_SetSRID(ST_Point(%(long)s, %(lat)s), 4326)::geography < 10000
         ORDER BY dist;"""
     cur.execute(closeSite, coordDict)
     closeSites = cur.fetchall()
