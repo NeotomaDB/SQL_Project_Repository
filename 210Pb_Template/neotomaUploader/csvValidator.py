@@ -28,18 +28,20 @@ col_keys = [k for k in flat_yml_data.keys() if k.endswith('_column')]
 
 # Get the corresponding values for the column keys
 col_values = [flat_yml_data[k] for k in col_keys]
+print(len(col_values))
 
 
 # Load the spreadsheet file
 csv_file = 'Bass 2005 SLBE.csv'
 df = pd.read_csv(csv_file)
-df.columns = [col.replace('.', ' ') for col in df.columns]
+#df.columns = [col.replace('.', ' ') for col in df.columns]
 
-print("values not in columns")
-print(set(col_values)-set(df.columns))
+print(len(df.columns))
+#print("values not in columns")
+print(sorted(set(col_values)-set(df.columns)))
 
-print("columns not in values")
-print(set(df.columns)-set(col_values))
+#print("columns not in values")
+print(sorted(set(df.columns)-set(col_values)))
 # Compare the column names with the flattened YAML keys
 if set(df.columns) == set(col_values):
     print("The column names and flattened YAML keys match")

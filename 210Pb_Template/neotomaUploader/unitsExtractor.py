@@ -15,8 +15,6 @@ def unitsExtractor(template, file):
     yml_dict = ymlToDict(template)
     data=pd.read_csv(file)
 
-    data.columns = [col.replace('.', ' ') for col in data.columns]
-
     elements = ['ddunits','cdmunits', 'riunits', 'accum',
                 'timeunits', 'precision', 'model', 'estimate',
                 'position']

@@ -1,0 +1,299 @@
+apiVersion: neotoma v2.0
+kind: Development
+metadata:
+  - column: Site.name
+    neotoma: ndb.sites.sitename  
+    vocab: 
+    repeat: 
+  - column: Core.number.or.code
+    neotoma: ndb.collectionunits.handle
+    vocab: 
+    repeat: 
+  - column: Publications
+    neotoma: ndb.publications
+    vocab: 
+    repeat: 
+  - column: Location
+    neotoma: ndb.geopoliticalunits
+    vocab: True
+    repeat: False
+  - column: Geographic.coordinates
+    neotoma: ndb.sites.geom
+    vocab: True
+    repeat: False
+  - column: Coordinate.precision
+    type: precision
+    neotoma: ndb.collectionunits.location
+    vocab: True
+    repeat: False
+  - column: Site.coordinates
+    type:
+    neotoma: '???'
+    vocab:
+    repeat:
+  - column: Depositional.Env
+    type:
+    neotoma: '???'
+    vocab:
+    repeat:
+  - column: Date.of.core.collection
+    neotoma: ndb.collectionunits.colldate
+    vocab: True
+    repeat: False
+  - column: Principal.Investigator.s.
+    neotoma: ndb.collectionunits.colldate
+    vocab: True
+    repeat: False
+  - column: Analyst
+    neotoma: ndb.sampleanalysts.contactid
+    vocab: 
+    repeat: 
+  - column: Modeler
+    neotoma: ndb.chronologies.contactid
+    vocab: 
+    repeat: 
+  - column: X210.LeadModel
+    type: model
+    neotoma: ndb.chronologies.agemodel
+    vocab: 
+    repeat: 
+  - column: X210.Lead.Model.Notes
+    neotoma: ndb.chronologies.notes
+    vocab: 
+    repeat: 
+  - column: Method.for.estimating.supported.210Pb
+    type: estimate
+    neotoma: ndb.leadmodels.basis
+    vocab: 
+    repeat: 
+  - column: X210Pb.dating.horizon
+    neotoma: ndb.leadmodels.datinghorizon
+    vocab: 
+    repeat: 
+  - column: Cumulative.210Pb.Inventory
+    neotoma: ndb.leadmodels.cumulativeinventory
+    vocab: 
+    repeat: 
+  - column: Depth
+    neotoma: ndb.analysisunits.depth
+    vocab: 
+    repeat: 
+  - column: Thickness
+    neotoma: ndb.analysisunits.thickness
+    vocab: 
+    repeat: 
+  - column: Depth.position
+    type: position
+    neotoma: '???'
+    vocab: 
+    repeat: 
+  - column: Dry.Density
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units:
+    - column: Dry.Density.Units
+      type: ddunits
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+  - column: Cumulative.dry.mass
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units:
+    - column: Cumulative.dry.mass.units
+      type: cdmunits
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+  - column: Total.210Pb.Alpha..synonym.Total.210Po.
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units:
+    - column: Total.210Pb.Alpha..synonym.Total.210Po..Units
+      type: riunits
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+  - column: Error..total.210Pb.alpha.
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units:
+    - column: Error..total.210Pb.alpha..units
+      type: riunits
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+  - column: Total.210Pb.Gamma
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units:
+    - column: Total.210Pb.Gamma.Units
+      type: riunits
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+  - column: Error..total.210Pb.Gamma.
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units:
+    - column: Error..total.210Pb.Gamma..Units
+      type: riunits
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+    - column: X214Pb
+      neotoma: ndb.values
+      vocab: 
+      repeat: 
+      units:
+      - column: X214Pb.Units
+      type: riunits
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+  - column: Error..214Pb.
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units:
+    - column: Error..214Pb..Units
+      type: riunits
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+  - column: X214Bi
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units:
+    - column: X214Bi.Units
+      type: riunits
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+  - column: Error.214Bi
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units:
+    - column: Error..214Bi..Units
+      type: riunits
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+  - column: X137Cs
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units:
+    - column: X137Cs.Units
+      type: riunits
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+  - column: Error..137Cs.
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units:
+    - column: Error..137Cs..Units
+      type: riunits
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+  - column: Assigned.137Cs.Date
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units:
+    - column: Assigned.137Cs.Date.Units
+      type: timeunits
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+  - column: Supported.210Pb
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units:
+    - column: Supported.210Pb.Units
+      type: riunits
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+  - column: Error..Supported.210Pb..1SD
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units:
+    - column: Error..Supported.210Pb..1SD.Units
+      type: riunits
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+  - column: Unsupported.210Pb
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units:
+    - column: Unsupported.210Pb.Units
+      type: riunits
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+  - column: Error..Unsupported.210Pb..1SD
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units:
+    - column: Error..Unsupported.210Pb..1SD.Units
+      type: riunits
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+  - column: X210Pb.Date
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units: 
+    - column: X210Pb.Date.Units
+      type: timeunits
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+  - column: Error..210Pb.Date.
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units:
+    - column: Error..210Pb.Date..1SD.Units
+      type: timeunits
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+  - column: DMAR
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units:
+    - column: DMAR.Units
+      type: accum
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
+  - column: Error..DMAR.
+    neotoma: ndb.values
+    vocab: 
+    repeat: 
+    units: 
+    - column: Error..DMAR..Units
+      type: accum
+      neotoma: ndb.variableunits.variableunits
+      vocab: 
+      repeat: 
