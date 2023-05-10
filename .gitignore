@@ -19,3 +19,4 @@ ORCID/.httr-oauth
 *.DS_Store
 
 */application.log
+**/application.log
