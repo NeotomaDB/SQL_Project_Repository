@@ -15,12 +15,12 @@ metadata:
     repeat:
   - column: Location
     neotoma: ndb.geopoliticalunits
-    vocab: True
-    repeat: False
+    vocab:
+    repeat:
   - column: Geographic.coordinates
     neotoma: ndb.sites.geom
-    vocab: True
-    repeat: False
+    vocab:
+    repeat:
   - column: Coordinate.precision
     type: precision
     neotoma: ndb.collectionunits.location
@@ -38,12 +38,12 @@ metadata:
     repeat:
   - column: Date.of.core.collection
     neotoma: ndb.collectionunits.colldate
-    vocab: True
-    repeat: False
+    vocab:
+    repeat:
   - column: Principal.Investigator.s.
     neotoma: ndb.collectionunits.colldate
-    vocab: True
-    repeat: False
+    vocab:
+    repeat:
   - column: Analyst
     neotoma: ndb.sampleanalysts.contactid
     vocab:

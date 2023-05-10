@@ -47,13 +47,16 @@ def flatten_dict(d, parent_key='', sep='_'):
 # Load the yml obtained from the argsparser
 with open(yml_file) as f:
     yml_data = yaml.load(f, Loader=SafeLoader)
-flat_yml_data = flatten_dict(yml_data) 
+#flat_yml_data = flatten_dict(yml_data) # Unnested information for now
 
-col_keys = [k for k in flat_yml_data.keys() if k.endswith('_column')]
+data = yml_data['metadata']
+col_values = [d['column'] for d in data]
 
+# In case we use nested dictionaries
+#col_keys = [k for k in yml_data.keys() if k.endswith('_column')]
 # Get the corresponding values for the column keys
-col_values = [flat_yml_data[k] for k in col_keys]
-
+#col_values = [yml_data[k] for k in col_keys]
+#print(col_values)
 # Open a log file
 with open('application.log', 'w', encoding = "utf-8") as log_file:
     # Iterate over the directory's files
