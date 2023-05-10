@@ -14,3 +14,9 @@ geospatial/gadm_410.gpkg
 210Pb_Template/neotomaUploader/__pycache__/
 
 ORCID/.httr-oauth
+
+*/*.DS_Store
+*.DS_Store
+
+*/application.log
+**/application.log
