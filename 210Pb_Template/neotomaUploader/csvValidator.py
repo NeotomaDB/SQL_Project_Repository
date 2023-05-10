@@ -52,12 +52,14 @@ with open(yml_file) as f:
 data = yml_data['metadata']
 col_values = [d['column'] for d in data]
 
+# Obtain the restricted vocabulary
+vocab_dict = {d['column']: d['vocab'] for d in data if d['vocab'] is not None}
+
 # In case we use nested dictionaries
 #col_keys = [k for k in yml_data.keys() if k.endswith('_column')]
 # Get the corresponding values for the column keys
 #col_values = [yml_data[k] for k in col_keys]
-#print(col_values)
-# Open a log file
+
 with open('application.log', 'w', encoding = "utf-8") as log_file:
     # Iterate over the directory's files
     for filename in os.listdir(directory):
@@ -85,7 +87,18 @@ with open('application.log', 'w', encoding = "utf-8") as log_file:
                 log_file.write("✗  The column names and flattened YAML keys do not match"+ '\n')
                 log_file.write(f"Columns not in values: '{diff_val}'"+ '\n')
                 log_file.write(f"Values not in columns: '{diff_col}'"+ '\n')
-        
+
+            # Guarantee that the keys in the controled vocabulary matched with the allowed terms
+            for key, values in vocab_dict.items():
+                if key in df.columns:
+                    column_values = df[key].tolist()
+                    all_values_in_dict = all(value in values for value in column_values)
+                
+                if all_values_in_dict:
+                    log_file.write(f"✔  All values in the '{key}' column correspond to the vocabulary."+ '\n')
+                else:
+                    log_file.write(f"✗  Not all values in the '{key}' column correspond to the vocabulary."+ '\n')
+ 
         except Exception as e:
             log_file.write(f"✗  Error opening file '{root}': {e}"+ '\n')
 
@@ -93,3 +106,4 @@ with open('application.log', 'w', encoding = "utf-8") as log_file:
 # Question: How many log files? Should it be a logfile for csv file?
 # Question: Why do some files seem to have a hidden `.log` extension?
 # Question: Nested or not nested YAML?
+# Note to self, Now I see why Simon does it as a list
