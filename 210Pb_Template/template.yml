@@ -24,8 +24,8 @@ metadata:
   - column: Coordinate.precision
     type: precision
     neotoma: ndb.collectionunits.location
-    vocab: True
-    repeat: False
+    vocab: ['core-site','GPS','core-site approximate','lake center']
+    repeat:
   - column: Site.coordinates
     type:
     neotoma: '???'
@@ -55,7 +55,7 @@ metadata:
   - column: X210.LeadModel
     type: model
     neotoma: ndb.chronologies.agemodel
-    vocab:
+    vocab: ['CRS', 'CIC', 'CF:CS', 'PLUM', 'other']
     repeat:
   - column: X210.Lead.Model.Notes
     neotoma: ndb.chronologies.notes
@@ -64,7 +64,7 @@ metadata:
   - column: Method.for.estimating.supported.210Pb
     type: estimate
     neotoma: ndb.leadmodels.basis
-    vocab:
+    vocab: ['asymptote of alpha', 'gamma point-subtraction', 'gamma average']
     repeat:
   - column: X210Pb.dating.horizon
     neotoma: ndb.leadmodels.datinghorizon
@@ -85,7 +85,7 @@ metadata:
   - column: Depth.position
     type: position
     neotoma: '???'
-    vocab:
+    vocab: ['Top', 'Mid', 'Bottom']
     repeat:
   - column: Dry.Density
     neotoma: ndb.values
@@ -96,7 +96,7 @@ metadata:
   - column: Dry.Density.Units
     type: ddunits
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['g/cm3']
     repeat:
   - column: Cumulative.dry.mass
     neotoma: ndb.values
@@ -107,7 +107,7 @@ metadata:
   - column: Cumulative.dry.mass.units
     type: cdmunits
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['g/cm2']
     repeat:
   - column: Total.210Pb.Alpha..synonym.Total.210Po.
     neotoma: ndb.values
@@ -118,7 +118,7 @@ metadata:
   - column: Total.210Pb.Alpha..synonym.Total.210Po..Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Error..total.210Pb.alpha.
     neotoma: ndb.values
@@ -129,7 +129,7 @@ metadata:
   - column: Error..total.210Pb.alpha..units
     type: riunits
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Total.210Pb.Gamma
     neotoma: ndb.values
@@ -140,7 +140,7 @@ metadata:
   - column: Total.210Pb.Gamma.Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Error..total.210Pb.Gamma.
     neotoma: ndb.values
@@ -151,7 +151,7 @@ metadata:
   - column: Error..total.210Pb.Gamma..Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: X214Pb
     neotoma: ndb.values
@@ -162,7 +162,7 @@ metadata:
   - column: X214Pb.Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Error..214Pb.
     neotoma: ndb.values
@@ -173,7 +173,7 @@ metadata:
   - column: Error..214Pb..Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: X214Bi
     neotoma: ndb.values
@@ -184,7 +184,7 @@ metadata:
   - column: X214Bi.Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Error.214Bi
     neotoma: ndb.values
@@ -195,7 +195,7 @@ metadata:
   - column: Error..214Bi..Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: X137Cs
     neotoma: ndb.values
@@ -206,7 +206,7 @@ metadata:
   - column: X137Cs.Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Error..137Cs.
     neotoma: ndb.values
@@ -217,18 +217,17 @@ metadata:
   - column: Error..137Cs..Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Assigned.137Cs.Date
     neotoma: ndb.values
     vocab:
-    repeat:
-    
+    repeat: 
 # Nest
   - column: Assigned.137Cs.Date.Units
     type: timeunits
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['CE/BCE', 'cal yr BP', 'Cal yr BP']
     repeat:
   - column: Supported.210Pb
     neotoma: ndb.values
@@ -239,7 +238,7 @@ metadata:
   - column: Supported.210Pb.Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Error..Supported.210Pb..1SD
     neotoma: ndb.values
@@ -250,7 +249,7 @@ metadata:
   - column: Error..Supported.210Pb..1SD.Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Unsupported.210Pb
     neotoma: ndb.values
@@ -261,7 +260,7 @@ metadata:
   - column: Unsupported.210Pb.Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Error..Unsupported.210Pb..1SD
     neotoma: ndb.values
@@ -272,7 +271,7 @@ metadata:
   - column: Error..Unsupported.210Pb..1SD.Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: X210Pb.Date
     neotoma: ndb.values
@@ -283,7 +282,7 @@ metadata:
   - column: X210Pb.Date.Units
     type: timeunits
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['CE/BCE', 'cal yr BP', 'Cal yr BP']
     repeat:
   - column: Error..210Pb.Date.
     neotoma: ndb.values
@@ -294,7 +293,7 @@ metadata:
   - column: Error..210Pb.Date..1SD.Units
     type: timeunits
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['CE/BCE', 'cal yr BP', 'Cal yr BP']
     repeat:
   - column: DMAR
     neotoma: ndb.values
@@ -305,7 +304,7 @@ metadata:
   - column: DMAR.Units
     type: accum
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['g/cm2/yr','g/m2/yr','kg/m2/yr']
     repeat:
   - column: Error..DMAR.
     neotoma: ndb.values
@@ -316,5 +315,5 @@ metadata:
   - column: Error..DMAR..Units
     type: accum
     neotoma: ndb.variableunits.variableunits
-    vocab:
+    vocab: ['g/cm2/yr','g/m2/yr','kg/m2/yr']
     repeat:

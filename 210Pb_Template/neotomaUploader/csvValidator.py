@@ -47,7 +47,7 @@ def flatten_dict(d, parent_key='', sep='_'):
 # Load the yml obtained from the argsparser
 with open(yml_file) as f:
     yml_data = yaml.load(f, Loader=SafeLoader)
-flat_yml_data = flatten_dict(yml_data) # OK to remove for now, reconsider if we use a nested YAML 
+flat_yml_data = flatten_dict(yml_data) 
 
 col_keys = [k for k in flat_yml_data.keys() if k.endswith('_column')]
 
