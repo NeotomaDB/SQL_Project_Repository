@@ -7,8 +7,8 @@ import argparse
 """
 To run from command line use:
 python csvValidator.py /path/to/directory
-Example:
-python csvValidator.py --path=/Users/haritoto/Desktop/UWisconsin/neotoma/data --template=/Users/haritoto/Desktop/UWisconsin/neotoma/SQL_Project_Repository/210Pb_Template/template.yml
+Example:/
+python csvValidator.py --path=/data --template=/210Pb_Template/template.yml
 """
 # Obtain arguments and parse them to handle command line arguments
 parser = argparse.ArgumentParser()
