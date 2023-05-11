@@ -1,0 +1,34 @@
+requiredFields:
+    - fields:
+      table: "ndb.sites"
+      columns: ["sitename", "east", "north", "west", "south"]
+    - fields:
+      table: "ndb.geopoliticalunits"
+      columns: ["geopoliticalid"]
+    - fields:
+      table: "ndb.collectionunits"
+      columns: ["handle", "siteid"]
+    - fields:
+      table: "ndb.analysisunits"
+      columns: ["collectionunitid"]
+    - fields:
+      table: "ndb.datasets"
+      columns: ["collectionunitid", "datasettype"]
+    - fields:
+      table: "ndb.contacts"
+      columns: ["datasetid", "contactid", "piorder"]
+    - fields:
+      table: "ndb.constituentdatabases"
+      columns: ["datasetid", "database"]
+    - fields:
+      table: "ndb.samples"
+      columns: ["analysisunitid", "datasetid"]
+    - fields:
+      table: "ndb.data"
+      columns: ["sampleid", "variableid", "value"]
+    - fields:
+      table: "ndb.data"
+      columns: ["sampleid", "variableid", "value"]
+    - fields:
+      table: "datasetsubmissions"
+      columns: ["datasetid", "databaseid", "contactid", "submissiontypeid", "submissiondate"]
