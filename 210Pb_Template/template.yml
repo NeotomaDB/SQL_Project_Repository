@@ -27,12 +27,10 @@ metadata:
     vocab: ['core-site','GPS','core-site approximate','lake center']
     repeat:
   - column: Site.coordinates
-    type:
     neotoma: '???'
     vocab:
     repeat:
   - column: Depositional.Env
-    type:
     neotoma: '???'
     vocab:
     repeat:

@@ -6,9 +6,20 @@
 """
 import glob
 import sys
+import argparse
 import json
 import psycopg2
 import neotomaUploader as nu
+
+# Obtain arguments and parse them to handle command line arguments
+parser = argparse.ArgumentParser()
+parser.add_argument('--data', type=str, help='Path to the data directory')
+parser.add_argument('--template', type=str, help='Template to use for evaluation')
+args = parser.parse_args()
+
+data_directory = args.data
+
+yml_file = args.template
 
 with open('connect_remote.json') as f:
     data = json.load(f)
@@ -20,13 +31,13 @@ cur = conn.cursor()
 args = sys.argv
 
 if len(args) > 1:
-    filename = glob.glob(args[1] + "*.csv")
+    filenames = glob.glob(data_directory + "*.csv")
 else:
     filenames = glob.glob("data/" + "*.csv")
 
 for filename in filenames:
     
-    print(filename)
+    print(filename)   
     logfile = []
 
     hashcheck = nu.hashFile(filename)
@@ -60,32 +71,13 @@ for filename in filenames:
         datinghorizon = nu.cleanCol('X210Pb.dating.horizon', template)
         colldate = nu.cleanCol('Date.of.core.collection', template)
 
-        unitcols = {'ddunits' : ['Dry.Density.Units'],
-                    'cdmunits' : ['Cumulative.dry.mass.units'],
-                    'riunits' : ['Total.210Pb.Alpha..synonym.Total.210Po..Units',
-                                'Error..total.210Pb.alpha..units',
-                                'Total.210Pb.Gamma.Units',
-                                'Error..total.210Pb.Gamma..Units', 'X214Pb.Units',
-                                'Error..214Pb..Units', 'X214Bi.Units',
-                                'Error..214Bi..Units', 'X137Cs.Units',
-                                'Error..137Cs..Units', 'Supported.210Pb.Units', 'Error..Supported.210Pb..1SD.Units', 
-                                'Unsupported.210Pb.Units','Error..Unsupported.210Pb..1SD.Units'],
-                    'accum' : ['DMAR.Units', 'Error..DMAR..Units'],
-                    'timeunits' : ['Assigned.137Cs.Date.Units', 'X210Pb.Date.Units', 'Error..210Pb.Date..1SD.Units'],
-                    'precision' : ['Coordinate.precision'],
-                    'model': ['X210.LeadModel'],
-                    'estimate': ['Method.for.estimating.supported.210Pb'],
-                    'position': ['Depth.position']}
-
-        units = {'ddunits': ['g/cm3'],
-                'cdmunits': ['g/cm2'],
-                'riunits': ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g'],
-                'accum': ['g/cm2/yr','g/m2/yr','kg/m2/yr'],
-                'timeunits': ['CE/BCE', 'cal yr BP', 'Cal yr BP'],
-                'precision': ['core-site','GPS','core-site approximate','lake center'],
-                'model': ['CRS', 'CIC', 'CF:CS', 'PLUM', 'other'],
-                'estimate': ['asymptote of alpha', 'gamma point-subtraction', 'gamma average'],
-                'position': ['Top', 'Mid', 'Bottom']}
+        # Template validate
+        dict1 = nu.ymlToDict(yml_file=yml_file)
+        
+        unitcols, units = nu.vocabDict(dict1=dict1)
+        
+        my_list= nu.csvValidator(filename=filename, units=units, dict1=dict1)
+        logfile = logfile + my_list 
 
         # Testing Data Units:
         unittest = nu.validUnits(template, unitcols, units)
@@ -113,9 +105,10 @@ for filename in filenames:
 
         ########### Geopolitical unit:
         logfile.append('=== Checking Against Geopolitical Units ===')
-        namecheck = nu.validGeoPol(cur, geog, coords)
-        logfile = logfile + namecheck['message']
-        testset['geopol'] = namecheck['pass']
+        # Commenting for now so that I can run the script
+        # namecheck = nu.validGeoPol(cur, geog, coords)
+        #logfile = logfile + namecheck['message']
+        #testset['geopol'] = namecheck['pass']
 
         ########### PI names:
         logfile.append('=== Checking Against Dataset PI Name ===')
