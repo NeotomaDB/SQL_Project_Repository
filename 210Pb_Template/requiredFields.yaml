@@ -27,8 +27,5 @@ requiredFields:
       table: "ndb.data"
       columns: ["sampleid", "variableid", "value"]
     - fields:
-      table: "ndb.data"
-      columns: ["sampleid", "variableid", "value"]
-    - fields:
       table: "datasetsubmissions"
       columns: ["datasetid", "databaseid", "contactid", "submissiontypeid", "submissiondate"]

@@ -15,6 +15,7 @@ def insertGeoPol(cur, uploader):
             cur.execute(assignGeoPol, { 'siteid': uploader['siteid'] })
             result = cur.fetchone()
             if result is not None:
+                result = result[0]
     else:
         result = None
     return result

@@ -1,3 +1,5 @@
+
+
 # Working with the Python Data Upload Template
 
 This set of python scripts is intended to support the bulk upload of a set of records to Neotoma. It consists of three key steps:
@@ -16,7 +18,7 @@ The template uses a `yaml` format file, with the following general structure for
 apiVersion: neotoma v2.0
 kind: Development
 metadata:
-  - column: Site.name
+  - column:  Site.name
     neotoma: ndb.sites.sitename  
     vocab: False
     repeat: True

@@ -1,11 +1,12 @@
-apiVersion: neotoma v2.0
+apiVersion: neotoma v2.0 # This is simply a statement of the API version.
 kind: Development
+headers: 2 # How many header rows will there be for this csv file (before data starts)
 metadata:
   - column: Site.name
-    neotoma: ndb.sites.sitename  
+    neotoma: ndb.sites.sitename                         
     vocab:
     repeat:
-  - column: Core.number.or.code
+  - column: Core.number                                                         .or.code
     neotoma: ndb.collectionunits.handle
     vocab:
     repeat:

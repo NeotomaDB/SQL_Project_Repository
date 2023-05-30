@@ -17,6 +17,8 @@ if len(args) > 1:
 else:
     filename = 'data/Speckled Trout 2006 GRPO.csv'
 
+template = 
+
 logfile = []
 hashcheck = nu.hashFile(filename)
 filecheck = nu.checkFile(filename)
@@ -25,6 +27,7 @@ if hashcheck['pass'] == False and filecheck['pass'] == False:
     logfile.append("File must be properly validated before it can be uploaded.")
 else:
     template = nu.read_csv(filename)
+    # This possibly needs to be fixed. How do we know that there is one or more header rows?
     del template[0]
     del template[0]
     
