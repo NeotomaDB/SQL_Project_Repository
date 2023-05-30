@@ -18,4 +18,7 @@ from .hashFile import hashFile
 from .checkFile import checkFile
 from .insertGeoPol import insertGeoPol
 from .insertCollUnit import insertCollUnit
+from .csvValidator import csvValidator
+from .csvValidator import ymlToDict
+from .csvValidator import vocabDict 
 
