@@ -1,5 +1,6 @@
 import sys
 import json
+import argparse
 import psycopg2
 import neotomaUploader as nu
 
@@ -10,14 +11,12 @@ conn = psycopg2.connect(**data, connect_timeout = 5)
 
 cur = conn.cursor()
 
-args = sys.argv
+args = nu.parseArguments()
 
 if len(args) > 1:
     filename = args[1]
 else:
     filename = 'data/Speckled Trout 2006 GRPO.csv'
-
-template = 
 
 logfile = []
 hashcheck = nu.hashFile(filename)
@@ -28,9 +27,6 @@ if hashcheck['pass'] == False and filecheck['pass'] == False:
 else:
     template = nu.read_csv(filename)
     # This possibly needs to be fixed. How do we know that there is one or more header rows?
-    del template[0]
-    del template[0]
-    
 uploader = {}
 
 # Cleaning fields to unique values:

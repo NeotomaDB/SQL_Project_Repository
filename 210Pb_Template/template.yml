@@ -6,7 +6,7 @@ metadata:
     neotoma: ndb.sites.sitename                         
     vocab:
     repeat:
-  - column: Core.number                                                         .or.code
+  - column: Core.number.or.code
     neotoma: ndb.collectionunits.handle
     vocab:
     repeat:

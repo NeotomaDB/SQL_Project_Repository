@@ -4,60 +4,48 @@
    each of them, validating each field to ensure they are acceptable for
    valid upload.
 """
+
 import glob
 import sys
-import argparse
 import json
+import os
 import psycopg2
 import neotomaUploader as nu
 
 # Obtain arguments and parse them to handle command line arguments
-parser = argparse.ArgumentParser()
-parser.add_argument('--data', type=str, help='Path to the data directory')
-parser.add_argument('--template', type=str, help='Template to use for evaluation')
-args = parser.parse_args()
+args = nu.parseArguments()
 
-data_directory = args.data
-
-yml_file = args.template
-
-with open('connect_remote.json') as f:
+# Connect to the database.
+with open('connect_remote.json', mode = "r", encoding = "UTF-8") as f:
     data = json.load(f)
 
 conn = psycopg2.connect(**data, connect_timeout = 5)
-
 cur = conn.cursor()
 
-args = sys.argv
-
-if len(args) > 1:
-    filenames = glob.glob(data_directory + "*.csv")
-else:
-    filenames = glob.glob("data/" + "*.csv")
+filenames = glob.glob(args['data'] + "*.csv")
 
 for filename in filenames:
-    
-    print(filename)   
+    print(filename)
     logfile = []
 
     hashcheck = nu.hashFile(filename)
     filecheck = nu.checkFile(filename)
     logfile = logfile + hashcheck['message'] + filecheck['message']
-    
+
     if hashcheck['pass'] and filecheck['pass']:
-       print("  - File is correct and hasn't changed since last validation.")
+        print("  - File is correct and hasn't changed since last validation.")
     else:
         template = nu.read_csv(filename)
         testset = { 'units': False,
-                'sites': False,
-                'colunits': False,
-                'geopol': False,
-                'date': False,
-                'piname': False,
-                'analystname': False,
-                'modelername': False,
-                'datinghorizon': False}
-        
+                    'sites': False,
+                    'colunits': False,
+                    'geopol': False,
+                    'date': False,
+                    'piname': False,
+                    'analystname': False,
+                    'modelername': False,
+                    'datinghorizon': False}
+
         # Cleaning fields to unique values:
         sitename = nu.cleanCol('Site.name', template)
         coords = nu.cleanCol('Geographic.coordinates', template)
@@ -73,11 +61,11 @@ for filename in filenames:
 
         # Template validate
         dict1 = nu.ymlToDict(yml_file=yml_file)
-        
+
         unitcols, units = nu.vocabDict(dict1=dict1)
-        
+
         my_list= nu.csvValidator(filename=filename, units=units, dict1=dict1)
-        logfile = logfile + my_list 
+        logfile = logfile + my_list
 
         # Testing Data Units:
         unittest = nu.validUnits(template, unitcols, units)
