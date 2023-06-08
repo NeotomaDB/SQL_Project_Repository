@@ -9,7 +9,7 @@ import glob
 import sys
 import json
 import os
-import psycopg2
+import psycopg2 
 import neotomaUploader as nu
 
 # Obtain arguments and parse them to handle command line arguments
@@ -60,7 +60,7 @@ for filename in filenames:
         colldate = nu.cleanCol('Date.of.core.collection', template)
 
         # Template validate
-        dict1 = nu.ymlToDict(yml_file=yml_file)
+        dict1 = nu.ymlToDict(yml_file=args['yml'])
 
         unitcols, units = nu.vocabDict(dict1=dict1)
 
