@@ -3,91 +3,112 @@ kind: Development
 headers: 2 # How many header rows will there be for this csv file (before data starts)
 metadata:
   - column: Site.name
-    neotoma: ndb.sites.sitename                         
+    neotoma: ndb.sites.sitename
+    required: True                         
     vocab:
     repeat:
   - column: Core.number.or.code
     neotoma: ndb.collectionunits.handle
+    required: True
     vocab:
     repeat:
   - column: Publications
     neotoma: ndb.publications
+    required: True
     vocab:
     repeat:
   - column: Location
     neotoma: ndb.geopoliticalunits
+    required: True
     vocab:
     repeat:
   - column: Geographic.coordinates
     neotoma: ndb.sites.geom
+    required: True
     vocab:
     repeat:
   - column: Coordinate.precision
     type: precision
     neotoma: ndb.collectionunits.location
+    required: False
     vocab: ['core-site','GPS','core-site approximate','lake center']
     repeat:
   - column: Site.coordinates
     neotoma: '???'
+    required: False
     vocab:
     repeat:
   - column: Depositional.Env
     neotoma: '???'
+    required: False
     vocab:
     repeat:
   - column: Date.of.core.collection
     neotoma: ndb.collectionunits.colldate
+    required: True
     vocab:
     repeat:
   - column: Principal.Investigator.s.
     neotoma: ndb.collectionunits.colldate
+    required: True
     vocab:
     repeat:
   - column: Analyst
     neotoma: ndb.sampleanalysts.contactid
+    required: True
     vocab:
     repeat:
   - column: Modeler
     neotoma: ndb.chronologies.contactid
+    required: True
     vocab:
     repeat:
   - column: X210.LeadModel
     type: model
     neotoma: ndb.chronologies.agemodel
+    required: False
     vocab: ['CRS', 'CIC', 'CF:CS', 'PLUM', 'other']
     repeat:
   - column: X210.Lead.Model.Notes
     neotoma: ndb.chronologies.notes
+    required: False
     vocab:
     repeat:
   - column: Method.for.estimating.supported.210Pb
     type: estimate
     neotoma: ndb.leadmodels.basis
+    required: False
     vocab: ['asymptote of alpha', 'gamma point-subtraction', 'gamma average']
     repeat:
   - column: X210Pb.dating.horizon
     neotoma: ndb.leadmodels.datinghorizon
+    required: True
     vocab:
     repeat:
   - column: Cumulative.210Pb.Inventory
     neotoma: ndb.leadmodels.cumulativeinventory
+    required: False
     vocab:
     repeat:
   - column: Depth
     neotoma: ndb.analysisunits.depth
+    required: True
     vocab:
     repeat:
   - column: Thickness
     neotoma: ndb.analysisunits.thickness
+    required: False
     vocab:
     repeat:
   - column: Depth.position
     type: position
     neotoma: '???'
+    required: False
     vocab: ['Top', 'Mid', 'Bottom']
     repeat:
   - column: Dry.Density
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -95,10 +116,12 @@ metadata:
   - column: Dry.Density.Units
     type: ddunits
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['g/cm3']
     repeat:
   - column: Cumulative.dry.mass
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -106,10 +129,12 @@ metadata:
   - column: Cumulative.dry.mass.units
     type: cdmunits
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['g/cm2']
     repeat:
   - column: Total.210Pb.Alpha..synonym.Total.210Po.
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -117,10 +142,12 @@ metadata:
   - column: Total.210Pb.Alpha..synonym.Total.210Po..Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Error..total.210Pb.alpha.
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -128,10 +155,12 @@ metadata:
   - column: Error..total.210Pb.alpha..units
     type: riunits
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Total.210Pb.Gamma
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -139,10 +168,12 @@ metadata:
   - column: Total.210Pb.Gamma.Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Error..total.210Pb.Gamma.
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -150,10 +181,12 @@ metadata:
   - column: Error..total.210Pb.Gamma..Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: X214Pb
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -161,10 +194,12 @@ metadata:
   - column: X214Pb.Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Error..214Pb.
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -172,10 +207,12 @@ metadata:
   - column: Error..214Pb..Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: X214Bi
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -183,10 +220,12 @@ metadata:
   - column: X214Bi.Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Error.214Bi
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -194,10 +233,12 @@ metadata:
   - column: Error..214Bi..Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: X137Cs
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -205,10 +246,12 @@ metadata:
   - column: X137Cs.Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Error..137Cs.
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -216,20 +259,24 @@ metadata:
   - column: Error..137Cs..Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Assigned.137Cs.Date
     neotoma: ndb.values
+    required: False
     vocab:
     repeat: 
 # Nest
   - column: Assigned.137Cs.Date.Units
     type: timeunits
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['CE/BCE', 'cal yr BP', 'Cal yr BP']
     repeat:
   - column: Supported.210Pb
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -237,10 +284,12 @@ metadata:
   - column: Supported.210Pb.Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Error..Supported.210Pb..1SD
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -248,10 +297,12 @@ metadata:
   - column: Error..Supported.210Pb..1SD.Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Unsupported.210Pb
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -259,10 +310,12 @@ metadata:
   - column: Unsupported.210Pb.Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: Error..Unsupported.210Pb..1SD
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -270,10 +323,12 @@ metadata:
   - column: Error..Unsupported.210Pb..1SD.Units
     type: riunits
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat:
   - column: X210Pb.Date
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -281,10 +336,12 @@ metadata:
   - column: X210Pb.Date.Units
     type: timeunits
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['CE/BCE', 'cal yr BP', 'Cal yr BP']
     repeat:
   - column: Error..210Pb.Date.
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -292,10 +349,12 @@ metadata:
   - column: Error..210Pb.Date..1SD.Units
     type: timeunits
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['CE/BCE', 'cal yr BP', 'Cal yr BP']
     repeat:
   - column: DMAR
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -303,10 +362,12 @@ metadata:
   - column: DMAR.Units
     type: accum
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['g/cm2/yr','g/m2/yr','kg/m2/yr']
     repeat:
   - column: Error..DMAR.
     neotoma: ndb.values
+    required: False
     vocab:
     repeat:
     
@@ -314,5 +375,6 @@ metadata:
   - column: Error..DMAR..Units
     type: accum
     neotoma: ndb.variableunits.variableunits
+    required: False
     vocab: ['g/cm2/yr','g/m2/yr','kg/m2/yr']
     repeat:

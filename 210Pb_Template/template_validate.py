@@ -11,6 +11,7 @@ import json
 import os
 import psycopg2 
 import neotomaUploader as nu
+import pandas as pd
 
 # Obtain arguments and parse them to handle command line arguments
 args = nu.parseArguments()
@@ -31,63 +32,72 @@ for filename in filenames:
     hashcheck = nu.hashFile(filename)
     filecheck = nu.checkFile(filename)
     logfile = logfile + hashcheck['message'] + filecheck['message']
-
+    
     if hashcheck['pass'] and filecheck['pass']:
         print("  - File is correct and hasn't changed since last validation.")
     else:
-        template = nu.read_csv(filename)
-        testset = { 'units': False,
-                    'sites': False,
-                    'colunits': False,
-                    'geopol': False,
-                    'date': False,
-                    'piname': False,
-                    'analystname': False,
-                    'modelername': False,
-                    'datinghorizon': False}
-
-        # Cleaning fields to unique values:
-        sitename = nu.cleanCol('Site.name', template)
-        coords = nu.cleanCol('Geographic.coordinates', template)
-        geog = nu.cleanCol('Location', template)
-        piname = nu.cleanCol('Principal.Investigator.s.', template)
-        analystname = nu.cleanCol('Analyst', template)
-        modelername = nu.cleanCol('Modeler', template)
-        pubname = nu.cleanCol('Publications', template)
-        collunits = nu.cleanCol('Core.number.or.code', template)
-        depths = nu.cleanCol('Depth', template)
-        datinghorizon = nu.cleanCol('X210Pb.dating.horizon', template)
-        colldate = nu.cleanCol('Date.of.core.collection', template)
-
-        # Template validate
+        # YML Template validate
+        # Load the yml template as a dictionary
         dict1 = nu.ymlToDict(yml_file=args['yml'])
 
+        # Obtain the unitcols and units to be used
         unitcols, units = nu.vocabDict(dict1=dict1)
 
-        my_list= nu.csvValidator(filename=filename, units=units, dict1=dict1)
-        logfile = logfile + my_list
+        # Verify that the CSV columns and the YML keys match
+        csvValid= nu.csvValidator(filename=filename, units=units, dict1=dict1)
+        # Log if the file is valid
+        logfile = logfile + csvValid
+
+        # Retrieve the required columns from the YML
+        reqCols = nu.getRequiredCols(dict1=dict1)
+        
+        # Sets up the testset using the yml
+        testset = {index: False for index in reqCols}
+        # This does not belong in the YML template
+        testset['units'] = False
+        
+        # Loads the CSV file ? Needed?
+        #csv_template = nu.read_csv(filename)
+ 
+        # VS. loads only the required columns from the CSV file
+        df = pd.read_csv(filename)
+        # To validate the entries/units are correct
+        csv_template = df.to_dict('records')
+        # Selecting only the required columns in the dataframe
+        df = df[reqCols]
+        
+        # Retrieves each column's unique values (vs cleanCol):
+        colsDict = {}
+        for col in df.columns:
+            colsDict[col] = list(df[col].unique())
 
         # Testing Data Units:
-        unittest = nu.validUnits(template, unitcols, units)
+        unittest = nu.validUnits(csv_template, unitcols, units)
         logfile.append('=== Checking Template Unit Definitions ===')
         testset['units'] = unittest['pass']
         logfile = logfile + unittest['message']
 
         ########### Testing site coordinates:
+        #sitename
         logfile.append('=== Checking Against Current Sites ===')
-        sitecheck = nu.validSite(cur, coords, hemisphere = ["NW"], sitename = sitename[0])
+        sitecheck = nu.validSite(cur, colsDict['Geographic.coordinates'], 
+                                      hemisphere = ["NW"], sitename = colsDict['Site.name'][0])
         testset['sites'] = sitecheck['pass']
         logfile = logfile + sitecheck['message']
 
         ########### Collection Date
+        # colldate
         logfile.append('=== Checking Against Collection Date Format ===')
-        dateCheck = nu.validDate(date = colldate, format = '%Y-%m-%d')
+        dateCheck = nu.validDate(date = colsDict['Date.of.core.collection'], 
+                                 format = '%Y-%m-%d')
         logfile = logfile + dateCheck['message']
         testset['date'] = dateCheck['pass']
         
         ########### Collection Units
         logfile.append('=== Checking Against Collection Units ===')
-        nameCheck = nu.validCollUnit(cur, coords, collunits)
+        nameCheck = nu.validCollUnit(cur, 
+                                     colsDict['Geographic.coordinates'], 
+                                     colsDict['Core.number.or.code'])
         logfile = logfile + nameCheck['message']
         testset['colunits'] = nameCheck['pass']
 
@@ -100,22 +110,26 @@ for filename in filenames:
 
         ########### PI names:
         logfile.append('=== Checking Against Dataset PI Name ===')
-        namecheck = nu.validAgent(cur, piname)
+        namecheck = nu.validAgent(cur, 
+                                  colsDict['Principal.Investigator.s.'])
         logfile = logfile + namecheck['message']
 
         ########### Age Modeller Name
         logfile.append('=== Checking Against Age Modeller Name(s) ===')
-        namecheck = nu.validAgent(cur, modelername)
+        namecheck = nu.validAgent(cur, 
+                                  colsDict['Modeler'])
         logfile = logfile + namecheck['message']
 
         ########### Analyst Name
         logfile.append('=== Checking Against Analyst Name(s) ===')
-        namecheck = nu.validAgent(cur, analystname)
+        namecheck = nu.validAgent(cur, 
+                                  colsDict['Analyst'])
         logfile = logfile + namecheck['message']
 
         ########### Make sure the dating horizon is in the analysis units:
         logfile.append('=== Checking the Dating Horizon is Valid ===')
-        horizoncheck = nu.validHorizon(depths, datinghorizon)
+        horizoncheck = nu.validHorizon(colsDict['Depth'], 
+                                       colsDict['X210Pb.dating.horizon'])
         testset['datinghorizon'] = horizoncheck['pass']
         logfile = logfile + horizoncheck['message']
         

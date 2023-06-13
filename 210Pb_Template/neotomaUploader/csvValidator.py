@@ -18,6 +18,11 @@ def ymlToDict(yml_file):
         yml_data = yaml.load(f, Loader=SafeLoader)
     return yml_data
 
+def getRequiredCols(dict1):
+    data = dict1['metadata']
+    required_cols = [d['column'] for d in data if d['required']==True]
+    return required_cols
+
 def vocabDict(dict1):
     """
     Obtain the units dictionary
