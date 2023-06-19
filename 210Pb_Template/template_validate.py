@@ -10,6 +10,7 @@ import sys
 import json
 import os
 import psycopg2 
+import inspect
 import neotomaUploader as nu
 import pandas as pd
 
@@ -36,7 +37,6 @@ for filename in filenames:
     if hashcheck['pass'] and filecheck['pass']:
         print("  - File is correct and hasn't changed since last validation.")
     else:
-        # YML Template validate
         # Load the yml template as a dictionary
         dict1 = nu.ymlToDict(yml_file=args['yml'])
 
@@ -51,24 +51,20 @@ for filename in filenames:
         # Retrieve the required columns from the YML
         reqCols = nu.getRequiredCols(dict1=dict1)
         
-        # Sets up the testset using the yml
+        # Sets up the testset using the yml - still not using this
         testset = {index: False for index in reqCols}
         # This does not belong in the YML template
         testset['units'] = False
-        
-        # Loads the CSV file ? Needed?
-        #csv_template = nu.read_csv(filename)
- 
-        # VS. loads only the required columns from the CSV file
+     
+        # Loads CSV file
         df = pd.read_csv(filename)
-        # To validate the entries/units are correct
+        # Convert to a dict of records to validate the entries/units are correct
         csv_template = df.to_dict('records')
-        # Selecting only the required columns in the dataframe
-        df = df[reqCols]
-        
+       
+       ## May be able to remove this
         # Retrieves each column's unique values (vs cleanCol):
         colsDict = {}
-        for col in df.columns:
+        for col in reqCols:
             colsDict[col] = list(df[col].unique())
 
         # Testing Data Units:
@@ -79,9 +75,11 @@ for filename in filenames:
 
         ########### Testing site coordinates:
         #sitename
+        #print(colsDict)
         logfile.append('=== Checking Against Current Sites ===')
-        sitecheck = nu.validSite(cur, colsDict['Geographic.coordinates'], 
-                                      hemisphere = ["NW"], sitename = colsDict['Site.name'][0])
+        #sitecheck = nu.validSite(cur, colsDict['Geographic.coordinates'], 
+        #                              hemisphere = ["NW"], sitename = colsDict['Site.name'][0])
+        sitecheck = nu.validSite(cur, dict1['metadata'], df)
         testset['sites'] = sitecheck['pass']
         logfile = logfile + sitecheck['message']
 
@@ -111,19 +109,25 @@ for filename in filenames:
         ########### PI names:
         logfile.append('=== Checking Against Dataset PI Name ===')
         namecheck = nu.validAgent(cur, 
-                                  colsDict['Principal.Investigator.s.'])
+                                  df, 
+                                  dict1['metadata'], 
+                                  'ndb.contacts.contactname')
         logfile = logfile + namecheck['message']
 
         ########### Age Modeller Name
         logfile.append('=== Checking Against Age Modeller Name(s) ===')
         namecheck = nu.validAgent(cur, 
-                                  colsDict['Modeler'])
+                                  df, 
+                                  dict1['metadata'], 
+                                  'ndb.chronologies.contactid')
         logfile = logfile + namecheck['message']
 
         ########### Analyst Name
         logfile.append('=== Checking Against Analyst Name(s) ===')
         namecheck = nu.validAgent(cur, 
-                                  colsDict['Analyst'])
+                                  df, 
+                                  dict1['metadata'], 
+                                  'ndb.sampleanalysts.contactid')
         logfile = logfile + namecheck['message']
 
         ########### Make sure the dating horizon is in the analysis units:
@@ -132,7 +136,7 @@ for filename in filenames:
                                        colsDict['X210Pb.dating.horizon'])
         testset['datinghorizon'] = horizoncheck['pass']
         logfile = logfile + horizoncheck['message']
-        
+
         ########### Write to log.
         with open(filename + '.log', 'w', encoding = "utf-8") as writer:
             for i in logfile:

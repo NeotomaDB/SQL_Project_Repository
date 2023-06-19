@@ -1,4 +1,7 @@
-def validSite(cur, coords, hemisphere, sitename):
+from .retrieveColumn import retrieveColumn
+import pandas as pd
+#def validSite(cur, coords, hemisphere, sitename):
+def validSite(cur, yml_dict, df):
     """_Is the site a valid new site?_
     The function accepts a set of coordinates, a site name, and the appropriate hemisphere and 
     returns a dict with the properties:
@@ -22,6 +25,14 @@ def validSite(cur, coords, hemisphere, sitename):
                 'sitelist': [],
                 'matched': {'namematch': False, 'distmatch': False},
                 'message': []}
+    
+    ## Retrieve the fields needed from the yml.
+    coords = retrieveColumn(yml_dict, 'ndb.sites.geom')
+    coords = list(df[coords].unique())
+
+    sitename = retrieveColumn(yml_dict, 'ndb.sites.sitename')
+    sitename = list(df[sitename].unique())
+    
     # Need to evaluate whether it's a new site, or not.
     sitelist = []
     if len(coords) != 1:
@@ -31,19 +42,19 @@ def validSite(cur, coords, hemisphere, sitename):
     coo = coords[0]
     coordDict = {'lat': [float(i.strip()) for i in coo.split(',')][0],
                 'long': [float(i.strip()) for i in coo.split(',')][1]}
+    
     # Get the allowed hemispheres for the record.
-    hemis = set({l for word in hemisphere for l in word})
-    hemi = False
-    if "N" in hemis and coordDict['lat'] >= 0:
-        hemi = True
-    elif "S" in hemis and coordDict['lat'] <= 0:
-        hemi = True
-    elif "E" in hemis and coordDict['long'] >= 0:
-        hemi = True
-    elif "W" in hemis and coordDict['long'] <= 0:
-        hemi = True
-    if hemi is False:
-        response['message'].append('✗ Latitude and longitude do not match the expected hemispheres.')
+    hemis = ""
+    if coordDict['lat'] >= 0:
+        hemis+="N"
+    else:
+        hemis+="S"
+    if coordDict['long'] >= 0:
+        hemis+="E"
+    else:
+        hemis+="W"
+    response['message'].append(f'? This set is expected to be in the {hemis} hemisphere.')  
+    
     closeSite = """
         SELECT st.*,
             ST_SetSRID(ST_Centroid(st.geog::geometry), 4326)::geography <-> ST_SetSRID(ST_Point(%(long)s, %(lat)s), 4326)::geography AS dist
