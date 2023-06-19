@@ -54,6 +54,7 @@ metadata:
   - column: Date.of.core.collection
     neotoma: ndb.collectionunits.colldate
     required: True
+    format: '%Y-%m-%d'
     dtype:
     vocab:
     repeat:

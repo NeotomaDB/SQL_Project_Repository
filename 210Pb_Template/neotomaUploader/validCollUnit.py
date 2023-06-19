@@ -1,6 +1,7 @@
+from .retrieveColumn import retrieveColumn
 import itertools
 
-def validCollUnit(cur, coords, collunits):
+def validCollUnit(cur, df, yml_dict, coords_str, collunits_str):
     """Is the collection unit valid as a new unit?
 
     Args:
@@ -14,6 +15,14 @@ def validCollUnit(cur, coords, collunits):
 
     response = {'pass': False,
             'message': []}
+    
+    coords = retrieveColumn(yml_dict, coords_str)
+    coords = coords['column']
+    coords = list(df[coords].unique())
+
+    collunits = retrieveColumn(yml_dict, collunits_str)
+    collunits = collunits['column']
+    collunits = list(df[collunits].unique())
 
     if len(coords) == 1:
         coords = coords[0]

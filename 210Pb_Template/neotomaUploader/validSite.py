@@ -1,7 +1,7 @@
 from .retrieveColumn import retrieveColumn
 import pandas as pd
 #def validSite(cur, coords, hemisphere, sitename):
-def validSite(cur, yml_dict, df):
+def validSite(cur, yml_dict, df, sites_str):
     """_Is the site a valid new site?_
     The function accepts a set of coordinates, a site name, and the appropriate hemisphere and 
     returns a dict with the properties:
@@ -28,9 +28,11 @@ def validSite(cur, yml_dict, df):
     
     ## Retrieve the fields needed from the yml.
     coords = retrieveColumn(yml_dict, 'ndb.sites.geom')
+    coords = coords['column']
     coords = list(df[coords].unique())
 
-    sitename = retrieveColumn(yml_dict, 'ndb.sites.sitename')
+    sitename = retrieveColumn(yml_dict, sites_str)
+    sitename = sitename['column']
     sitename = list(df[sitename].unique())
     
     # Need to evaluate whether it's a new site, or not.

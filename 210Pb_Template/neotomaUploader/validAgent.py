@@ -10,6 +10,7 @@ def validAgent(cur, df, yml_dict, str_contact):
     response = { 'pass': False, 'name': None, 'message': [] }
     namematch = []
     agentname = retrieveColumn(yml_dict, str_contact)
+    agentname = agentname['column']
     agentname = list(df[agentname].unique())
     for name in agentname:
         response['message'].append(f"*** PI: {name} ***")

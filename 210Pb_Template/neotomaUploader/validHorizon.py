@@ -1,4 +1,6 @@
-def validHorizon(depths, horizon):
+from .retrieveColumn import retrieveColumn
+#def validHorizon(depths, horizon):
+def validHorizon(df, yml_dict, depth_str, horizon_str):
     """_Is the dated horizon one of the accepted dates?_
 
     Args:
@@ -11,6 +13,12 @@ def validHorizon(depths, horizon):
     response = {'pass': False,
                 'index': [],
                 'message': []}
+    depth = retrieveColumn(yml_dict, depth_str)
+    depth = depth['column']
+    depths = df[depth].tolist()
+    horizon = retrieveColumn(yml_dict, horizon_str)
+    horizon = horizon['column']
+    horizon = list(df[horizon].unique())
     if len(horizon) == 1:
         matchingdepth = [i == horizon[0] for i in depths]
         if any(matchingdepth):
