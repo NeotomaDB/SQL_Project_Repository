@@ -1,4 +1,5 @@
-from .retrieveColumn import retrieveColumn
+from .retrieveDict import retrieveDict
+from .validColumn import validColumn, cleanColumn
 import pandas as pd
 #def validSite(cur, coords, hemisphere, sitename):
 def validSite(cur, yml_dict, df, sites_str):
@@ -27,13 +28,17 @@ def validSite(cur, yml_dict, df, sites_str):
                 'message': []}
     
     ## Retrieve the fields needed from the yml.
-    coords = retrieveColumn(yml_dict, 'ndb.sites.geom')
-    coords = coords['column']
-    coords = list(df[coords].unique())
+    coordsD = retrieveDict(yml_dict, 'ndb.sites.geom')
+    coords_message = validColumn(df, coordsD)
+    coords = cleanColumn(df, coordsD)
+    if len(coords_message) >0:
+        response['message'].append(coords_message)
 
-    sitename = retrieveColumn(yml_dict, sites_str)
-    sitename = sitename['column']
-    sitename = list(df[sitename].unique())
+    sitenameD = retrieveDict(yml_dict, sites_str)
+    sitename_message = validColumn(df, sitenameD)
+    sitename = cleanColumn(df, sitenameD)
+    if len(sitename_message) >0:
+        response['message'].append(sitename_message)
     
     # Need to evaluate whether it's a new site, or not.
     sitelist = []

@@ -39,46 +39,33 @@ for filename in filenames:
     else:
         # Load the yml template as a dictionary
         yml_dict = nu.ymlToDict(yml_file=args['yml'])
+        yml_data = yml_dict['metadata']
  
         # Obtain the unitcols and units to be used
-        unitcols, units = nu.vocabDict(yml_dict=yml_dict)
+        vocab_ = nu.vocabDict(yml_data)
 
         # Verify that the CSV columns and the YML keys match
-        csvValid= nu.csvValidator(filename=filename, units=units, yml_dict=yml_dict)
+        csvValid= nu.csvValidator(filename=filename, 
+                                  yml_dict=yml_data)
         # Log if the file is valid
         logfile = logfile + csvValid
 
-        # Retrieve the required columns from the YML
-        reqCols = nu.getRequiredCols(yml_dict=yml_dict)
-        
-        # Sets up the testset using the yml - still not using this
-        testset = {index: False for index in reqCols}
-        # This does not belong in the YML template
-        testset['units'] = False
-     
+        testset = dict()
         # Loads CSV file
         df = pd.read_csv(filename)
-        # Convert to a dict of records to validate the entries/units are correct
-        csv_template = df.to_dict('records')
-       
-       ## May be able to remove this
-        # Retrieves each column's unique values (vs cleanCol):
-        colsDict = {}
-        for col in reqCols:
-            colsDict[col] = list(df[col].unique())
-
+        
         # Testing Data Units:
-        unittest = nu.validUnits(csv_template, unitcols, units)
+        unittest = nu.validUnits(df, vocab_)
         logfile.append('=== Checking Template Unit Definitions ===')
         testset['units'] = unittest['pass']
         logfile = logfile + unittest['message']
-
+    
         ########### Testing site coordinates:
         #sitename
         logfile.append('=== Checking Against Current Sites ===')
         # removed hemisphere = ["NW"], added a note on which hemisphere the site would be.
         sitecheck = nu.validSite(cur = cur, 
-                                 yml_dict = yml_dict['metadata'], 
+                                 yml_dict = yml_data, 
                                  df = df,
                                  sites_str = 'ndb.sites.sitename')
         testset['sites'] = sitecheck['pass']
@@ -88,7 +75,7 @@ for filename in filenames:
         # colldate
         logfile.append('=== Checking Against Collection Date Format ===')
         # format is retrieved in validDate via the yml
-        dateCheck = nu.validDate(yml_dict['metadata'], 
+        dateCheck = nu.validDate(yml_data, 
                                  df, 
                                  'ndb.collectionunits.colldate')
         logfile = logfile + dateCheck['message']
@@ -96,12 +83,9 @@ for filename in filenames:
         
         ########### Collection Units
         logfile.append('=== Checking Against Collection Units ===')
-        #nameCheck = nu.validCollUnit(cur, 
-        #                             colsDict['Geographic.coordinates'], 
-        #                             colsDict['Core.number.or.code'])
         nameCheck = nu.validCollUnit(cur,
                                      df,
-                                     yml_dict['metadata'],
+                                     yml_data,
                                      'ndb.sites.geom',
                                      'ndb.collectionunits.handle')
         logfile = logfile + nameCheck['message']
@@ -118,7 +102,7 @@ for filename in filenames:
         logfile.append('=== Checking Against Dataset PI Name ===')
         namecheck = nu.validAgent(cur, 
                                   df, 
-                                  yml_dict['metadata'], 
+                                  yml_data, 
                                   'ndb.contacts.contactname')
         logfile = logfile + namecheck['message']
 
@@ -126,7 +110,7 @@ for filename in filenames:
         logfile.append('=== Checking Against Age Modeller Name(s) ===')
         namecheck = nu.validAgent(cur, 
                                   df, 
-                                  yml_dict['metadata'], 
+                                  yml_data, 
                                   'ndb.chronologies.contactid')
         logfile = logfile + namecheck['message']
 
@@ -134,16 +118,14 @@ for filename in filenames:
         logfile.append('=== Checking Against Analyst Name(s) ===')
         namecheck = nu.validAgent(cur, 
                                   df, 
-                                  yml_dict['metadata'], 
+                                  yml_data, 
                                   'ndb.sampleanalysts.contactid')
         logfile = logfile + namecheck['message']
 
         ########### Make sure the dating horizon is in the analysis units:
         logfile.append('=== Checking the Dating Horizon is Valid ===')
-        #horizoncheck = nu.validHorizon(colsDict['Depth'], 
-        #                               colsDict['X210Pb.dating.horizon'])
         horizoncheck = nu.validHorizon(df,
-                                       yml_dict['metadata'],
+                                       yml_data,
                                        'ndb.analysisunits.depth',
                                        'ndb.leadmodels.datinghorizon')
         testset['datinghorizon'] = horizoncheck['pass']

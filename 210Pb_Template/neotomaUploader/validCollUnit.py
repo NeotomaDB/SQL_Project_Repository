@@ -1,4 +1,5 @@
-from .retrieveColumn import retrieveColumn
+from .retrieveDict import retrieveDict
+from .validColumn import validColumn, cleanColumn
 import itertools
 
 def validCollUnit(cur, df, yml_dict, coords_str, collunits_str):
@@ -16,13 +17,17 @@ def validCollUnit(cur, df, yml_dict, coords_str, collunits_str):
     response = {'pass': False,
             'message': []}
     
-    coords = retrieveColumn(yml_dict, coords_str)
-    coords = coords['column']
-    coords = list(df[coords].unique())
+    coordsD = retrieveDict(yml_dict, 'ndb.sites.geom')
+    coords_message = validColumn(df, coordsD)
+    coords = cleanColumn(df, coordsD)
+    if len(coords_message) >0:
+        response['message'].append(coords_message)
 
-    collunits = retrieveColumn(yml_dict, collunits_str)
-    collunits = collunits['column']
-    collunits = list(df[collunits].unique())
+    collunitsD = retrieveDict(yml_dict, collunits_str)
+    collunits_message = validColumn(df, collunitsD)
+    collunits = cleanColumn(df, collunitsD)
+    if len(collunits_message) >0:
+        response['message'].append(collunits_message)
 
     if len(coords) == 1:
         coords = coords[0]

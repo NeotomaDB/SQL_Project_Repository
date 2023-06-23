@@ -1,4 +1,5 @@
-from .retrieveColumn import retrieveColumn
+from .retrieveDict import retrieveDict
+from .validColumn import validColumn, cleanColumn
 #def validAgent(cur, agentname):
 def validAgent(cur, df, yml_dict, str_contact):
     """_Get user agent or contact from Neotoma_
@@ -9,9 +10,12 @@ def validAgent(cur, df, yml_dict, str_contact):
     """
     response = { 'pass': False, 'name': None, 'message': [] }
     namematch = []
-    agentname = retrieveColumn(yml_dict, str_contact)
-    agentname = agentname['column']
-    agentname = list(df[agentname].unique())
+    agentnameD = retrieveDict(yml_dict, str_contact)
+    agent_message = validColumn(df, agentnameD)
+    agentname = cleanColumn(df, agentnameD)
+    if len(agent_message) >0:
+        response['message'].append(agent_message)
+    
     for name in agentname:
         response['message'].append(f"*** PI: {name} ***")
         nameQuery = """
