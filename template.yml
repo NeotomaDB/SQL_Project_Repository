@@ -29,7 +29,7 @@ metadata:
   - column: Geographic.coordinates
     neotoma: ndb.sites.geom
     required: True
-    dtype:
+    dtype: str
     vocab:
     repeat:
   - column: Coordinate.precision
@@ -55,25 +55,25 @@ metadata:
     neotoma: ndb.collectionunits.colldate
     required: True
     format: '%Y-%m-%d'
-    dtype:
+    dtype: date
     vocab:
     repeat:
   - column: Principal.Investigator.s.
     neotoma: ndb.contacts.contactname
     required: True
-    dtype:
+    dtype: str
     vocab:
     repeat:
   - column: Analyst
     neotoma: ndb.sampleanalysts.contactid
     required: True
-    dtype:
+    dtype: str
     vocab:
     repeat:
   - column: Modeler
     neotoma: ndb.chronologies.contactid
     required: True
-    dtype:
+    dtype: str
     vocab:
     repeat:
   - column: X210.LeadModel
@@ -86,7 +86,7 @@ metadata:
   - column: X210.Lead.Model.Notes
     neotoma: ndb.chronologies.notes
     required: False
-    dtype:
+    dtype: str
     vocab:
     repeat:
   - column: Method.for.estimating.supported.210Pb
@@ -111,15 +111,15 @@ metadata:
   - column: Depth
     neotoma: ndb.analysisunits.depth
     required: True
-    dtype:
+    dtype: float
     vocab:
-    repeat:
+    repeat: True
   - column: Thickness
     neotoma: ndb.analysisunits.thickness
     required: False
-    dtype:
+    dtype: float
     vocab:
-    repeat:
+    repeat: True
   - column: Depth.position
     type: position
     neotoma: '???'
