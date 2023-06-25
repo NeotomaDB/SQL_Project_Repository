@@ -3,9 +3,12 @@ import json
 import argparse
 import psycopg2
 import neotomaUploader as nu
+from dotenv import load_dotenv
+import os
 
-with open('connect_remote.json') as f:
-    data = json.load(f)
+load_dotenv()
+
+data = json.loads(os.getenv('PGDB_HOLDING'))
 
 conn = psycopg2.connect(**data, connect_timeout = 5)
 
@@ -27,7 +30,12 @@ if hashcheck['pass'] == False and filecheck['pass'] == False:
 else:
     template = nu.read_csv(filename)
     # This possibly needs to be fixed. How do we know that there is one or more header rows?
+
 uploader = {}
+
+dict1 = nu.ymlToDict(yml_file=args['yml'])
+unitcols, units = nu.vocabDict(dict1 = dict1)
+
 
 # Cleaning fields to unique values:
 sitename = nu.cleanCol('Site.name', template)
