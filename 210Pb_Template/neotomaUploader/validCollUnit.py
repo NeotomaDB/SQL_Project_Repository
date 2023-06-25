@@ -1,6 +1,8 @@
+from .retrieveDict import retrieveDict
+from .validColumn import validColumn, cleanColumn
 import itertools
 
-def validCollUnit(cur, coords, collunits):
+def validCollUnit(cur, df, yml_dict, coords_str, collunits_str):
     """Is the collection unit valid as a new unit?
 
     Args:
@@ -14,6 +16,18 @@ def validCollUnit(cur, coords, collunits):
 
     response = {'pass': False,
             'message': []}
+    
+    coordsD = retrieveDict(yml_dict, 'ndb.sites.geom')
+    coords_message = validColumn(df, coordsD)
+    coords = cleanColumn(df, coordsD)
+    if len(coords_message) >0:
+        response['message'].append(coords_message)
+
+    collunitsD = retrieveDict(yml_dict, collunits_str)
+    collunits_message = validColumn(df, collunitsD)
+    collunits = cleanColumn(df, collunitsD)
+    if len(collunits_message) >0:
+        response['message'].append(collunits_message)
 
     if len(coords) == 1:
         coords = coords[0]

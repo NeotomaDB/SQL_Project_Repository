@@ -1,4 +1,8 @@
-def validSite(cur, coords, hemisphere, sitename):
+from .retrieveDict import retrieveDict
+from .validColumn import validColumn, cleanColumn
+import pandas as pd
+#def validSite(cur, coords, hemisphere, sitename):
+def validSite(cur, yml_dict, df, sites_str):
     """_Is the site a valid new site?_
     The function accepts a set of coordinates, a site name, and the appropriate hemisphere and 
     returns a dict with the properties:
@@ -22,6 +26,20 @@ def validSite(cur, coords, hemisphere, sitename):
                 'sitelist': [],
                 'matched': {'namematch': False, 'distmatch': False},
                 'message': []}
+    
+    ## Retrieve the fields needed from the yml.
+    coordsD = retrieveDict(yml_dict, 'ndb.sites.geom')
+    coords_message = validColumn(df, coordsD)
+    coords = cleanColumn(df, coordsD)
+    if len(coords_message) >0:
+        response['message'].append(coords_message)
+
+    sitenameD = retrieveDict(yml_dict, sites_str)
+    sitename_message = validColumn(df, sitenameD)
+    sitename = cleanColumn(df, sitenameD)
+    if len(sitename_message) >0:
+        response['message'].append(sitename_message)
+    
     # Need to evaluate whether it's a new site, or not.
     sitelist = []
     if len(coords) != 1:
@@ -31,19 +49,19 @@ def validSite(cur, coords, hemisphere, sitename):
     coo = coords[0]
     coordDict = {'lat': [float(i.strip()) for i in coo.split(',')][0],
                 'long': [float(i.strip()) for i in coo.split(',')][1]}
+    
     # Get the allowed hemispheres for the record.
-    hemis = set({l for word in hemisphere for l in word})
-    hemi = False
-    if "N" in hemis and coordDict['lat'] >= 0:
-        hemi = True
-    elif "S" in hemis and coordDict['lat'] <= 0:
-        hemi = True
-    elif "E" in hemis and coordDict['long'] >= 0:
-        hemi = True
-    elif "W" in hemis and coordDict['long'] <= 0:
-        hemi = True
-    if hemi is False:
-        response['message'].append('✗ Latitude and longitude do not match the expected hemispheres.')
+    hemis = ""
+    if coordDict['lat'] >= 0:
+        hemis+="N"
+    else:
+        hemis+="S"
+    if coordDict['long'] >= 0:
+        hemis+="E"
+    else:
+        hemis+="W"
+    response['message'].append(f'? This set is expected to be in the {hemis} hemisphere.')  
+    
     closeSite = """
         SELECT st.*,
             ST_SetSRID(ST_Centroid(st.geog::geometry), 4326)::geography <-> ST_SetSRID(ST_Point(%(long)s, %(lat)s), 4326)::geography AS dist

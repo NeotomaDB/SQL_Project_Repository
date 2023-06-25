@@ -3,7 +3,7 @@ def cleanCol(column, template, clean = True):
 
     Args:
         column (_list_): _The name of the column to use_
-        template (_dict_): _The CSV file_
+        template (_list_): _The CSV file as a list of dictionaries_
         clean (bool, optional): _Does the column get reduced to only the unique values?_. Defaults to True.
 
     Returns:

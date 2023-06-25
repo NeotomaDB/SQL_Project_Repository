@@ -1,6 +1,9 @@
+from .retrieveDict import retrieveDict
+from .validColumn import validColumn, cleanColumn
 import datetime
 
-def validDate(date, format):
+#def validDate(date, format):
+def validDate(yml_dict, df, date_str):
     """_Check to see if the date format is valid for a given type_
 
     Args:
@@ -10,7 +13,13 @@ def validDate(date, format):
     Returns:
         _dict_: _An object with a valid parameter and the re-formatted date (as a datetime object)._
     """
-    response = {'pass': False, 'date': date, 'message': []}
+
+    response = {'pass': False, 'message': []}
+
+    date_dictD = retrieveDict(yml_dict, date_str)
+    date = cleanColumn(df, date_dictD)
+    format = date_dictD['format']
+
     if format is None:
         format = '%Y-%m-%d'
     try:
