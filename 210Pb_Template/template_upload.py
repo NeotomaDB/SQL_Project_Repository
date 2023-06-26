@@ -1,6 +1,4 @@
-import sys
 import json
-import argparse
 import psycopg2
 import neotomaUploader as nu
 from dotenv import load_dotenv
@@ -16,8 +14,8 @@ cur = conn.cursor()
 
 args = nu.parseArguments()
 
-if len(args) > 1:
-    filename = args[1]
+if args.get('data') == 1:
+    filename = 'data/Speckled Trout 2006 GRPO.csv'
 else:
     filename = 'data/Speckled Trout 2006 GRPO.csv'
 
@@ -33,13 +31,17 @@ else:
 
 uploader = {}
 
-dict1 = nu.ymlToDict(yml_file=args['yml'])
-unitcols, units = nu.vocabDict(dict1 = dict1)
+yml_dict = nu.ymlToDict(yml_file=args['yml'])
+yml_data = yml_dict['metadata']
 
+# Obtain the unitcols and units to be used
+vocab_ = nu.vocabDict(yml_data)
+
+# Verify that the CSV columns and the YML keys match
+csvValid = nu.csvValidator(filename = filename, 
+                            yml_data = yml_data)
 
 # Cleaning fields to unique values:
-sitename = nu.cleanCol('Site.name', template)
-coords = nu.cleanCol('Geographic.coordinates', template)
 geog = nu.cleanCol('Location', template)
 piname = nu.cleanCol('Principal.Investigator.s.', template)
 analystname = nu.cleanCol('Analyst', template)
@@ -63,57 +65,56 @@ for i in range(len(depths)):
     dthick.append({'depth': depths[i], 'thickness': thicks[i], 'age': ages[i], 'error': ageerror[i]})
 
 logfile.append('=== Inserting new Site ===')
-uploader['siteid'] = nu.insertSite(cur = cur, sitename = sitename, coords = coords)
+uploader['siteid'] = nu.insertSite(cur = cur, yml_dict = yml_dict, template = template)
 logfile.append('siteid: %s' % uploader['siteid'])
 
-logfile.append('=== Inserting Site Geopol ===')
-uploader['geopolid'] = nu.insertGeoPol(cur = cur, siteid = uploader['siteid'])
-logfile.append('Geopolitical Unit: %s' % uploader['geopolid'])
+print(logfile)
+# logfile.append('=== Inserting Site Geopol ===')
+# # uploader['geopolid'] = nu.insertGeoPol(cur = cur, uploader = uploader)
+# # logfile.append('Geopolitical Unit: %s' % uploader['geopolid'])
 
-logfile.append('=== Inserting Collection Units ===')
-uploader['collunitid'] = nu.insertCollUnit(cur = cur, collunits = collunits, 
-                                        colldate = colldate, siteid = uploader['siteid'],
-                                        coords = coords, location = location)
-logfile.append('collunitid: %s' % uploader['collunitid'])
+# logfile.append('=== Inserting Collection Units ===')
+# uploader['collunitid'] = nu.insertCollUnit(cur = cur, yml_dict = yml_dict, template = template)
+# logfile.append('collunitid: %s' % uploader['collunitid'])
 
-logfile.append('=== Inserting Analysis Units ===')
-uploader['anunits'] = nu.insertAnalysisUnit(cur = cur,
-                                        collunitid = uploader['collunitid'],
-                                        dthick = dthick)
+# logfile.append('=== Inserting Analysis Units ===')
+# uploader['anunits'] = nu.insertAnalysisUnit(cur = cur,
+#                                         collunitid = uploader['collunitid'],
+#                                         dthick = dthick)
 
-logfile.append('=== Inserting Chronology ===')
-uploader['chronology'] = nu.insertChronology(cur = cur, 
-                                        collunitid = uploader['collunitid'],
-                                        agetype = agetype[1], 
-                                        agemodel = agemodel[0],
-                                        ages = ages,
-                                        contactname = modelername,
-                                        default = True,
-                                        chronologyname = 'Default 210Pb')
+# logfile.append('=== Inserting Chronology ===')
+# uploader['chronology'] = nu.insertChronology(cur = cur, 
+#                                         collunitid = uploader['collunitid'],
+#                                         agetype = agetype[1], 
+#                                         agemodel = agemodel[0],
+#                                         ages = ages,
+#                                         contactname = modelername,
+#                                         default = True,
+#                                         chronologyname = 'Default 210Pb')
 
-logfile.append('=== Inserting Chroncontrol ===')
-uploader['chroncontrol'] = nu.insertChroncontrol(cur = cur, 
-                                        collunitid = uploader['collunitid'],
-                                        agetype = agetype[1], 
-                                        agemodel = agemodel[0],
-                                        ages = ages,
-                                        contactname = modelername,
-                                        default = True,
-                                        chronologyname = 'Default 210Pb')
+# logfile.append('=== Inserting Chroncontrol ===')
+# uploader['chroncontrol'] = nu.insertChroncontrol(cur = cur, 
+#                                         collunitid = uploader['collunitid'],
+#                                         agetype = agetype[1], 
+#                                         agemodel = agemodel[0],
+#                                         ages = ages,
+#                                         contactname = modelername,
+#                                         default = True,
+#                                         chronologyname = 'Default 210Pb')
 
-uploader['datasetid'] = nu.insertDataset(cur, uploader['collunitid'], datasetname)
+# uploader['datasetid'] = nu.insertDataset(cur, uploader['collunitid'], datasetname)
 
-uploader['datasetpi'] = nu.insertDatasetPI(cur, uploader['datasetid'], piname[i], i + 1)
+# uploader['datasetpi'] = nu.insertDatasetPI(cur, uploader['datasetid'], piname[i], i + 1)
 
-uploader['processor'] = nu.insertDatasetProcessor(cur, uploader['datasetid'])
+# uploader['processor'] = nu.insertDatasetProcessor(cur, uploader['datasetid'])
 
-uploader['repository'] = nu.insertDatasetRepository(cur, uploader['datasetid'])
+# uploader['repository'] = nu.insertDatasetRepository(cur, uploader['datasetid'])
 
-nu.insertDatasetDatabase(cur, uploader['datasetid'], "")
-nu.insertSamples(cur, ts.insertsample
-ts.insertsampleanalyst
-ts.insertsampleage
-ts.insertdata
+# nu.insertDatasetDatabase(cur, uploader['datasetid'], "")
+# nu.insertSamples(cur, ts.insertsample
+# ts.insertsampleanalyst
+# ts.insertsampleage
+# ts.insertdata
 
-conn.commit()
+# conn.commit()
 conn.rollback()
