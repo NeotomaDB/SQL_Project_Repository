@@ -11,15 +11,16 @@ import json
 import os
 import psycopg2 
 import inspect
-import neotomaUploader as nu
 import pandas as pd
+from dotenv import load_dotenv
+import neotomaUploader as nu
 
 # Obtain arguments and parse them to handle command line arguments
 args = nu.parseArguments()
 
-# Connect to the database.
-with open('connect_remote.json', mode = "r", encoding = "UTF-8") as f:
-    data = json.load(f)
+load_dotenv()
+
+data = json.loads(os.getenv('PGDB_HOLDING'))
 
 conn = psycopg2.connect(**data, connect_timeout = 5)
 cur = conn.cursor()
@@ -33,20 +34,20 @@ for filename in filenames:
     hashcheck = nu.hashFile(filename)
     filecheck = nu.checkFile(filename)
     logfile = logfile + hashcheck['message'] + filecheck['message']
-    
+
     if hashcheck['pass'] and filecheck['pass']:
         print("  - File is correct and hasn't changed since last validation.")
     else:
         # Load the yml template as a dictionary
         yml_dict = nu.ymlToDict(yml_file=args['yml'])
         yml_data = yml_dict['metadata']
- 
+
         # Obtain the unitcols and units to be used
         vocab_ = nu.vocabDict(yml_data)
 
         # Verify that the CSV columns and the YML keys match
-        csvValid= nu.csvValidator(filename=filename, 
-                                  yml_dict=yml_data)
+        csvValid = nu.csvValidator(filename = filename,
+                                   yml_dict = yml_data)
         # Log if the file is valid
         logfile = logfile + csvValid
 
