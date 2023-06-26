@@ -9,8 +9,7 @@ import glob
 import sys
 import json
 import os
-import psycopg2 
-import inspect
+import psycopg2
 import pandas as pd
 from dotenv import load_dotenv
 import neotomaUploader as nu
@@ -47,7 +46,7 @@ for filename in filenames:
 
         # Verify that the CSV columns and the YML keys match
         csvValid = nu.csvValidator(filename = filename,
-                                   yml_dict = yml_data)
+                                   yml_data = yml_data)
         # Log if the file is valid
         logfile = logfile + csvValid
 
@@ -65,8 +64,8 @@ for filename in filenames:
         #sitename
         logfile.append('=== Checking Against Current Sites ===')
         # removed hemisphere = ["NW"], added a note on which hemisphere the site would be.
-        sitecheck = nu.validSite(cur = cur, 
-                                 yml_dict = yml_data, 
+        sitecheck = nu.validSite(cur = cur,
+                                 yml_dict = yml_data,
                                  df = df,
                                  sites_str = 'ndb.sites.sitename')
         testset['sites'] = sitecheck['pass']

@@ -48,7 +48,7 @@ metadata:
     repeat: True
     notes:
   - column: Site.coordinates
-    neotoma: '???'
+    neotoma: ndb.collectionunits.geom
     required: True
     type: string
     vocab:

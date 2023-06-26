@@ -6,6 +6,7 @@ import pandas as pd
 import os
 import sys
 import argparse
+
 """
 To run from command line use:
 python csvValidator.py /path/to/directory
