@@ -24,9 +24,10 @@ hashcheck = nu.hashFile(filename)
 filecheck = nu.checkFile(filename)
 
 if hashcheck['pass'] == False and filecheck['pass'] == False:
+    csvTemplate = nu.read_csv(filename)
     logfile.append("File must be properly validated before it can be uploaded.")
 else:
-    template = nu.read_csv(filename)
+    csvTemplate = nu.read_csv(filename)
     # This possibly needs to be fixed. How do we know that there is one or more header rows?
 
 uploader = {}
@@ -34,48 +35,54 @@ uploader = {}
 yml_dict = nu.ymlToDict(yml_file=args['yml'])
 yml_data = yml_dict['metadata']
 
-# Obtain the unitcols and units to be used
-vocab_ = nu.vocabDict(yml_data)
-
 # Verify that the CSV columns and the YML keys match
-csvValid = nu.csvValidator(filename = filename, 
+csvValid = nu.csvValidator(filename = filename,
                             yml_data = yml_data)
 
 # Cleaning fields to unique values:
-geog = nu.cleanCol('Location', template)
-piname = nu.cleanCol('Principal.Investigator.s.', template)
-analystname = nu.cleanCol('Analyst', template)
-modelername = nu.cleanCol('Modeler', template)
-pubname = nu.cleanCol('Publications', template)
-collunits = nu.cleanCol('Core.number.or.code', template)
-colldate = nu.cleanCol('Date.of.core.collection', template)
-location = nu.cleanCol('Coordinate.precision', template)
-depths = nu.cleanCol('Depth', template, False)
-thicks = nu.cleanCol('Thickness', template, False)
-dateunits = nu.cleanCol('X210Pb.Date.Units', template)
-ages = nu.cleanCol('X210Pb.Date', template, False)
-ageerror = nu.cleanCol('Error..210Pb.Date.', template, False)
-agemodel = nu.cleanCol('X210.LeadModel', template)
-chronnotes = nu.cleanCol('X210.Lead.Model.Notes', template)
-datasetname = nu.cleanCol('Core.number.or.code', template)
+geog = nu.cleanCol('Location', csvTemplate)
+piname = nu.cleanCol('Principal.Investigator.s.', csvTemplate)
+analystname = nu.cleanCol('Analyst', csvTemplate)
+modelername = nu.cleanCol('Modeler', csvTemplate)
+pubname = nu.cleanCol('Publications', csvTemplate)
+collunits = nu.cleanCol('Core.number.or.code', csvTemplate)
+colldate = nu.cleanCol('Date.of.core.collection', csvTemplate)
+location = nu.cleanCol('Coordinate.precision', csvTemplate)
+depths = nu.cleanCol('Depth', csvTemplate, False)
+thicks = nu.cleanCol('Thickness', csvTemplate, False)
+dateunits = nu.cleanCol('X210Pb.Date.Units', csvTemplate)
+ages = nu.cleanCol('X210Pb.Date', csvTemplate, False)
+ageerror = nu.cleanCol('Error..210Pb.Date.', csvTemplate, False)
+agemodel = nu.cleanCol('X210.LeadModel', csvTemplate)
+chronnotes = nu.cleanCol('X210.Lead.Model.Notes', csvTemplate)
+datasetname = nu.cleanCol('Core.number.or.code', csvTemplate)
 
 dthick = []
 # We need to arrange the depths, thicknesses and ages.
-for i in range(len(depths)):
-    dthick.append({'depth': depths[i], 'thickness': thicks[i], 'age': ages[i], 'error': ageerror[i]})
+for i, value in enumerate(depths):
+    dthick.append({'depth': value,
+                   'thickness': thicks[i],
+                   'age': ages[i],
+                   'error': ageerror[i]})
 
 logfile.append('=== Inserting new Site ===')
-uploader['siteid'] = nu.insertSite(cur = cur, yml_dict = yml_dict, template = template)
+uploader['siteid'] = nu.insertSite(cur = cur,
+                                   yml_dict = yml_dict,
+                                   csvTemplate = csvTemplate)
+
 logfile.append('siteid: %s' % uploader['siteid'])
 
-print(logfile)
 # logfile.append('=== Inserting Site Geopol ===')
 # # uploader['geopolid'] = nu.insertGeoPol(cur = cur, uploader = uploader)
 # # logfile.append('Geopolitical Unit: %s' % uploader['geopolid'])
 
-# logfile.append('=== Inserting Collection Units ===')
-# uploader['collunitid'] = nu.insertCollUnit(cur = cur, yml_dict = yml_dict, template = template)
-# logfile.append('collunitid: %s' % uploader['collunitid'])
+logfile.append('=== Inserting Collection Units ===')
+uploader['collunitid'] = nu.insertCollUnit(cur = cur,
+                                           yml_dict = yml_dict,
+                                           csvTemplate = csvTemplate,
+                                           uploader = uploader)
+
+logfile.append('collunitid: %s' % uploader['collunitid'])
 
 # logfile.append('=== Inserting Analysis Units ===')
 # uploader['anunits'] = nu.insertAnalysisUnit(cur = cur,
@@ -93,9 +100,9 @@ print(logfile)
 #                                         chronologyname = 'Default 210Pb')
 
 # logfile.append('=== Inserting Chroncontrol ===')
-# uploader['chroncontrol'] = nu.insertChroncontrol(cur = cur, 
+# uploader['chroncontrol'] = nu.insertChroncontrol(cur = cur,
 #                                         collunitid = uploader['collunitid'],
-#                                         agetype = agetype[1], 
+#                                         agetype = agetype[1],
 #                                         agemodel = agemodel[0],
 #                                         ages = ages,
 #                                         contactname = modelername,
@@ -117,4 +124,5 @@ print(logfile)
 # ts.insertdata
 
 # conn.commit()
+print(logfile)
 conn.rollback()
