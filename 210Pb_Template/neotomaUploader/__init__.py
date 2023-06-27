@@ -7,7 +7,8 @@ import argparse
 import os
 
 from .cleanCol import cleanCol
-from .insertSite import insertSite
+from .yaml_values import yaml_values
+from .insert_site import insert_site
 from .insertAnalysisUnit import insertAnalysisUnit
 from .validAgent import validAgent
 from .validDate import validDate
