@@ -1,6 +1,7 @@
 from .retrieveDict import retrieveDict
 from .validColumn import validColumn, cleanColumn
 import pandas as pd
+
 #def validSite(cur, coords, hemisphere, sitename):
 def validSite(cur, yml_dict, df, sites_str):
     """_Is the site a valid new site?_
@@ -26,7 +27,7 @@ def validSite(cur, yml_dict, df, sites_str):
                 'sitelist': [],
                 'matched': {'namematch': False, 'distmatch': False},
                 'message': []}
-    
+
     ## Retrieve the fields needed from the yml.
     coordsD = retrieveDict(yml_dict, 'ndb.sites.geom')
     coords_message = validColumn(df, coordsD)
