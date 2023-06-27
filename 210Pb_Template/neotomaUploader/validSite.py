@@ -80,8 +80,8 @@ def validSite(cur, yml_dict, df, sites_str):
         # extract only the names of the sites
         sitenamesList = [item['name'] for item in response['sitelist']]
         response['matched']['namematch'] = any(x in sitename for x in sitenamesList)
-        if response['matched']['namematch']:
-            response['matched']['distmatch'] = next((item['distance (m)'] for item in response['sitelist'] if item['name'] in sitename), None) == 0
+        # Distmatch should be independent of the sitename
+        response['matched']['distmatch'] = next((item['distance (m)'] for item in response['sitelist']), None) == 0
         if response['matched']['namematch'] and response['matched']['distmatch']:
             response['valid'] = True
             response['message'].append('✔  Valid site: Site currently exists at the reported location and the name is matched.')
