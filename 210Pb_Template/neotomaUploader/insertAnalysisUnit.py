@@ -30,7 +30,7 @@ def insertAnalysisUnit(cur, yml_dict, csvTemplate, uploader):
 
     anunits = []
     for i, value in enumerate(depths):
-        cur.execute(addUnit, {'collunitid': uploader['collunitid'], 
+        cur.execute(addUnit, {'collunitid': uploader['collunitid'],
                               'depth': value, 'thickness': thicks[i]})
         anunits.append(cur.fetchone()[0])
     return anunits
