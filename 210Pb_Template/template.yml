@@ -19,13 +19,13 @@ metadata:
     repeat: False
     notes:
   - column: Publications
-    neotoma: ndb.publications
+    neotoma: ndb.publications.citation
     required: True
     type: string
     link:
     vocab:
     repeat:
-    notes: Would it be easier to get a number of DOIs
+    notes: Would it be easier to get a number of DOIs?
   - column: Location
     neotoma: ndb.geopoliticalunits
     required: True
@@ -147,7 +147,7 @@ metadata:
     repeat: True
     notes:
   - column: Dry.Density
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     required: False
     type: number
     vocab:
@@ -161,7 +161,7 @@ metadata:
     repeat: True
     notes:
   - column: Cumulative.dry.mass
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     required: False
     type: number
     vocab:
@@ -175,7 +175,7 @@ metadata:
     repeat: True
     notes:
   - column: Total.210Pb.Alpha..synonym.Total.210Po.
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     required: False
     type: number
     vocab:
@@ -189,7 +189,7 @@ metadata:
     repeat:
     notes:
   - column: Error..total.210Pb.alpha.
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     required: False
     type: number
     vocab:
@@ -203,7 +203,7 @@ metadata:
     repeat:
     notes:
   - column: Total.210Pb.Gamma
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     required: False
     type: number
     vocab:
@@ -217,7 +217,7 @@ metadata:
     repeat: True
     notes:
   - column: Error..total.210Pb.Gamma.
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     required: False
     type: number
     vocab:
@@ -231,7 +231,7 @@ metadata:
     repeat: True
     notes:
   - column: X214Pb
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     required: False
     type: number
     vocab:
@@ -245,7 +245,7 @@ metadata:
     repeat: True
     notes:
   - column: Error..214Pb.
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     required: False
     type: number
     vocab:
@@ -259,7 +259,7 @@ metadata:
     repeat: True
     notes:
   - column: X214Bi
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     required: False
     type: number
     vocab:
@@ -273,7 +273,7 @@ metadata:
     repeat: True
     notes:
   - column: Error.214Bi
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     required: False
     type: number
     vocab:
@@ -287,7 +287,7 @@ metadata:
     repeat: True
     notes:
   - column: X137Cs
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     required: False
     type: number
     vocab:
@@ -301,7 +301,7 @@ metadata:
     repeat: True
     notes:
   - column: Error..137Cs.
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     required: False
     type: number
     vocab:
@@ -315,7 +315,7 @@ metadata:
     repeat: True
     notes:
   - column: Assigned.137Cs.Date
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     required: False
     type: number
     vocab:
@@ -329,7 +329,7 @@ metadata:
     repeat: True
     notes:
   - column: Supported.210Pb
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     required: False
     type: number
     vocab:
@@ -343,7 +343,7 @@ metadata:
     repeat: True
     notes:
   - column: Error..Supported.210Pb..1SD
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     required: False
     type: number
     vocab:
@@ -357,7 +357,7 @@ metadata:
     repeat: True
     notes:
   - column: Unsupported.210Pb
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     required: False
     type: number
     vocab:
@@ -371,7 +371,7 @@ metadata:
     repeat: True
     notes:
   - column: Error..Unsupported.210Pb..1SD
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     required: False
     type: number
     vocab:
@@ -385,35 +385,35 @@ metadata:
     repeat: True
     notes:
   - column: X210Pb.Date
-    neotoma: ndb.values
+    neotoma: ndb.sampleages.age
     required: False
     type: string
     vocab:
     repeat:
     notes:
   - column: X210Pb.Date.Units
-    neotoma: ndb.variableunits.variableunits
+    neotoma: ndb.agetypes.agetype
     required: False
     type: string
     vocab: ['CE/BCE', 'cal yr BP', 'Cal yr BP']
     repeat:
     notes:
   - column: Error..210Pb.Date.
-    neotoma: ndb.values
+    neotoma: ndb.sampleages.ageerror
     required: False
     type: number
     vocab:
     repeat:
-    notes:
+    notes: This is the error, not the ageyounger/ageolder that we use in the model.
   - column: Error..210Pb.Date..1SD.Units
-    neotoma: ndb.variableunits.variableunits
+    neotoma: ndb.agetypes.agetype
     required: False
     type: string
     vocab: ['CE/BCE', 'cal yr BP', 'Cal yr BP']
     repeat: True
     notes:
   - column: DMAR
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     required: False
     type: number
     vocab:
@@ -427,7 +427,7 @@ metadata:
     repeat:
     notes:
   - column: Error..DMAR.
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     required: False
     type: number
     vocab:

@@ -9,17 +9,17 @@ def retrieveDict(yml_dict, sqlColumn):
         sqlColumn (_str_): _A character string indicating the SQL column to be matched._
 
     Returns:
-        _object_: _The object associated with a particular YAML template entry_
+        list_: _A list of all dictionaries associated with a particular Neotoma table/column_
     """
     #result = next((d['column'] for d in yml_dict if d['neotoma'] == sqlColumn), None)
     # retrieving the dict instead:
     try:
-        assert type(yml_dict) is dict
+        assert isinstance(yml_dict, dict)
         assert yml_dict.get('metadata')
     except AssertionError:
         logging.error("The yml_dict must be a dict object (not a list) containing the key 'metadata'.", exc_info=True)
-    result = next((d for d in yml_dict['metadata'] if d['neotoma'] == sqlColumn), None)
+    result = [d for d in yml_dict['metadata'] if d['neotoma'] == sqlColumn]
     if result is None:
-        warnings.warn("No matching dictionary found.")
+        warnings.warn("No matching dictionary entry found.")
     else:
         return result
