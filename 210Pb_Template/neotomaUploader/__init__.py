@@ -8,6 +8,7 @@ import os
 
 from .cleanCol import cleanCol
 from .insertSite import insertSite
+from .insertAnalysisUnit import insertAnalysisUnit
 from .validAgent import validAgent
 from .validDate import validDate
 from .read_csv import read_csv
