@@ -85,7 +85,11 @@ uploader['collunitid'] = nu.insertCollUnit(cur = cur,
 logfile.append('collunitid: %s' % uploader['collunitid'])
 
 # logfile.append('=== Inserting Analysis Units ===')
-# uploader['anunits'] = nu.insertAnalysisUnit(cur = cur,
+uploader['anunits'] = nu.insertAnalysisUnit(cur = cur,
+                                            yml_dict = yml_dict,
+                                            csvTemplate = csvTemplate,
+                                            uploader = uploader)
+
 #                                         collunitid = uploader['collunitid'],
 #                                         dthick = dthick)
 

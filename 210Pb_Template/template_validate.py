@@ -64,7 +64,7 @@ for filename in filenames:
         logfile.append('=== Checking Against Current Sites ===')
         # removed hemisphere = ["NW"], added a note on which hemisphere the site would be.
         sitecheck = nu.validSite(cur = cur,
-                                 yml_dict = yml_data,
+                                 yml_dict = yml_dict,
                                  df = df,
                                  sites_str = 'ndb.sites.sitename')
         testset['sites'] = sitecheck['pass']
@@ -74,7 +74,7 @@ for filename in filenames:
         # colldate
         logfile.append('=== Checking Against Collection Date Format ===')
         # format is retrieved in validDate via the yml
-        dateCheck = nu.validDate(yml_data,
+        dateCheck = nu.validDate(yml_dict,
                                  df,
                                  'ndb.collectionunits.colldate')
         logfile = logfile + dateCheck['message']
@@ -84,7 +84,7 @@ for filename in filenames:
         logfile.append('=== Checking Against Collection Units ===')
         nameCheck = nu.validCollUnit(cur,
                                      df,
-                                     yml_data,
+                                     yml_dict,
                                      'ndb.sites.geom',
                                      'ndb.collectionunits.handle')
         logfile = logfile + nameCheck['message']
@@ -101,7 +101,7 @@ for filename in filenames:
         logfile.append('=== Checking Against Dataset PI Name ===')
         namecheck = nu.validAgent(cur,
                                   df,
-                                  yml_data,
+                                  yml_dict,
                                   'ndb.contacts.contactname')
         logfile = logfile + namecheck['message']
 
@@ -109,7 +109,7 @@ for filename in filenames:
         logfile.append('=== Checking Against Age Modeller Name(s) ===')
         namecheck = nu.validAgent(cur,
                                   df,
-                                  yml_data,
+                                  yml_dict,
                                   'ndb.chronologies.contactid')
         logfile = logfile + namecheck['message']
 
@@ -117,14 +117,14 @@ for filename in filenames:
         logfile.append('=== Checking Against Analyst Name(s) ===')
         namecheck = nu.validAgent(cur,
                                   df,
-                                  yml_data,
+                                  yml_dict,
                                   'ndb.sampleanalysts.contactid')
         logfile = logfile + namecheck['message']
 
         ########### Make sure the dating horizon is in the analysis units:
         logfile.append('=== Checking the Dating Horizon is Valid ===')
         horizoncheck = nu.validHorizon(df,
-                                       yml_data,
+                                       yml_dict,
                                        'ndb.analysisunits.depth',
                                        'ndb.leadmodels.datinghorizon')
         testset['datinghorizon'] = horizoncheck['pass']
