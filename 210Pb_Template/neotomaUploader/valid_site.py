@@ -3,7 +3,7 @@ from .validColumn import validColumn, cleanColumn
 import pandas as pd
 
 #def validSite(cur, coords, hemisphere, sitename):
-def validSite(cur, yml_dict, df, sites_str):
+def valid_site(cur, yml_dict, df, sites_str):
     """_Is the site a valid new site?_
     The function accepts a set of coordinates, a site name, and the appropriate hemisphere and 
     returns a dict with the properties:

@@ -63,7 +63,7 @@ for filename in filenames:
         #sitename
         logfile.append('=== Checking Against Current Sites ===')
         # removed hemisphere = ["NW"], added a note on which hemisphere the site would be.
-        sitecheck = nu.validSite(cur = cur,
+        sitecheck = nu.valid_site(cur = cur,
                                  yml_dict = yml_dict,
                                  df = df,
                                  sites_str = 'ndb.sites.sitename')
