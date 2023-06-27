@@ -50,7 +50,6 @@ def validSite(cur, yml_dict, df, sites_str):
     coo = coords[0]
     coordDict = {'lat': [float(i.strip()) for i in coo.split(',')][0],
                 'long': [float(i.strip()) for i in coo.split(',')][1]}
-    
     # Get the allowed hemispheres for the record.
     hemis = ""
     if coordDict['lat'] >= 0:
@@ -65,9 +64,9 @@ def validSite(cur, yml_dict, df, sites_str):
     
     closeSite = """
         SELECT st.*,
-            ST_SetSRID(ST_Centroid(st.geog::geometry), 4326)::geography <-> ST_SetSRID(ST_Point(%(long)s, %(lat)s), 4326)::geography AS dist
+            ST_SetSRID(st.geog::geometry, 4326)::geography <-> ST_SetSRID(ST_Point(%(long)s, %(lat)s), 4326)::geography AS dist
         FROM   ndb.sites AS st
-        WHERE ST_SetSRID(ST_Centroid(st.geog::geometry), 4326)::geography <-> ST_SetSRID(ST_Point(%(long)s, %(lat)s), 4326)::geography < 10000
+        WHERE ST_SetSRID(st.geog::geometry, 4326)::geography <-> ST_SetSRID(ST_Point(%(long)s, %(lat)s), 4326)::geography < 10000
         ORDER BY dist;"""
     cur.execute(closeSite, coordDict)
     closeSites = cur.fetchall()
@@ -78,9 +77,11 @@ def validSite(cur, yml_dict, df, sites_str):
         for i in closeSites:
             site = {'id': str(i[0]), 'name': i[1], 'coordlo': str(i[2]), 'coordla': str(i[3]), 'distance (m)': round(i[13], 0)}
             response['sitelist'].append(site)
-        response['matched']['namematch'] = any([x['name'] == sitename for x in response['sitelist']])
+        # extract only the names of the sites
+        sitenamesList = [item['name'] for item in response['sitelist']]
+        response['matched']['namematch'] = any(x in sitename for x in sitenamesList)
         if response['matched']['namematch']:
-            response['matched']['distmatch'] = response['sitelist'][[x['name'] == sitename for x in response['sitelist']].index(True)]['distance (m)'] == 0
+            response['matched']['distmatch'] = next((item['distance (m)'] for item in response['sitelist'] if item['name'] in sitename), None) == 0
         if response['matched']['namematch'] and response['matched']['distmatch']:
             response['valid'] = True
             response['message'].append('✔  Valid site: Site currently exists at the reported location and the name is matched.')
