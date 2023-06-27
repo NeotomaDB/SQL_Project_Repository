@@ -6,7 +6,6 @@
 """
 
 import glob
-import sys
 import json
 import os
 import psycopg2
@@ -50,16 +49,16 @@ for filename in filenames:
         # Log if the file is valid
         logfile = logfile + csvValid
 
-        testset = dict()
+        testset = {}
         # Loads CSV file
         df = pd.read_csv(filename)
-        
+
         # Testing Data Units:
         unittest = nu.validUnits(df, vocab_)
         logfile.append('=== Checking Template Unit Definitions ===')
         testset['units'] = unittest['pass']
         logfile = logfile + unittest['message']
-    
+
         ########### Testing site coordinates:
         #sitename
         logfile.append('=== Checking Against Current Sites ===')
@@ -75,12 +74,12 @@ for filename in filenames:
         # colldate
         logfile.append('=== Checking Against Collection Date Format ===')
         # format is retrieved in validDate via the yml
-        dateCheck = nu.validDate(yml_data, 
-                                 df, 
+        dateCheck = nu.validDate(yml_data,
+                                 df,
                                  'ndb.collectionunits.colldate')
         logfile = logfile + dateCheck['message']
         testset['date'] = dateCheck['pass']
-        
+
         ########### Collection Units
         logfile.append('=== Checking Against Collection Units ===')
         nameCheck = nu.validCollUnit(cur,
@@ -100,25 +99,25 @@ for filename in filenames:
 
         ########### PI names:
         logfile.append('=== Checking Against Dataset PI Name ===')
-        namecheck = nu.validAgent(cur, 
-                                  df, 
-                                  yml_data, 
+        namecheck = nu.validAgent(cur,
+                                  df,
+                                  yml_data,
                                   'ndb.contacts.contactname')
         logfile = logfile + namecheck['message']
 
         ########### Age Modeller Name
         logfile.append('=== Checking Against Age Modeller Name(s) ===')
-        namecheck = nu.validAgent(cur, 
-                                  df, 
-                                  yml_data, 
+        namecheck = nu.validAgent(cur,
+                                  df,
+                                  yml_data,
                                   'ndb.chronologies.contactid')
         logfile = logfile + namecheck['message']
 
         ########### Analyst Name
         logfile.append('=== Checking Against Analyst Name(s) ===')
-        namecheck = nu.validAgent(cur, 
-                                  df, 
-                                  yml_data, 
+        namecheck = nu.validAgent(cur,
+                                  df,
+                                  yml_data,
                                   'ndb.sampleanalysts.contactid')
         logfile = logfile + namecheck['message']
 
