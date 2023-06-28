@@ -11,11 +11,11 @@ from .yaml_values import yaml_values
 from .insert_site import insert_site
 from .insertAnalysisUnit import insertAnalysisUnit
 from .validAgent import validAgent
-from .validDate import validDate
+from .valid_date import valid_date
 from .read_csv import read_csv
 from .validUnits import validUnits
-from .validSite import validSite
-from .validCollUnit import validCollUnit
+from .valid_site import valid_site
+from .valid_collectionunit import valid_collectionunit
 from .validGeoPol import validGeoPol
 from .validHorizon import validHorizon
 from .hashFile import hashFile

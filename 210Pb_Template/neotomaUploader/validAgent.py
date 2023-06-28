@@ -1,5 +1,5 @@
 from .retrieveDict import retrieveDict
-from .validColumn import validColumn, cleanColumn
+from .valid_column import valid_column, cleanColumn
 #def validAgent(cur, agentname):
 def validAgent(cur, df, yml_dict, str_contact):
     """_Get user agent or contact from Neotoma_
@@ -11,7 +11,7 @@ def validAgent(cur, df, yml_dict, str_contact):
     response = { 'pass': False, 'name': None, 'message': [] }
     namematch = []
     agentnameD = retrieveDict(yml_dict, str_contact)
-    agent_message = validColumn(df, agentnameD)
+    agent_message = valid_column(df, agentnameD)
     agentname = cleanColumn(df, agentnameD)
     if len(agent_message) >0:
         response['message'].append(agent_message)

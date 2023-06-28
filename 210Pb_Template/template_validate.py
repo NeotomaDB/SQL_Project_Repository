@@ -52,6 +52,7 @@ for filename in filenames:
         testset = {}
         # Loads CSV file
         df = pd.read_csv(filename)
+        csv_template = nu.read_csv(filename)
 
         # Testing Data Units:
         unittest = nu.validUnits(df, vocab_)
@@ -63,30 +64,26 @@ for filename in filenames:
         #sitename
         logfile.append('=== Checking Against Current Sites ===')
         # removed hemisphere = ["NW"], added a note on which hemisphere the site would be.
-        sitecheck = nu.validSite(cur = cur,
-                                 yml_dict = yml_dict,
-                                 df = df,
-                                 sites_str = 'ndb.sites.sitename')
+        sitecheck = nu.valid_site(cur = cur,
+                                  yml_dict = yml_dict,
+                                  csv_template = csv_template)
         testset['sites'] = sitecheck['pass']
         logfile = logfile + sitecheck['message']
 
         ########### Collection Date
         # colldate
-        logfile.append('=== Checking Against Collection Date Format ===')
+        logfile.append('=== Checking All Date Formats ===')
         # format is retrieved in validDate via the yml
-        dateCheck = nu.validDate(yml_dict,
-                                 df,
-                                 'ndb.collectionunits.colldate')
+        dateCheck = nu.valid_date(yml_dict,
+                                 csv_template)
         logfile = logfile + dateCheck['message']
         testset['date'] = dateCheck['pass']
 
         ########### Collection Units
         logfile.append('=== Checking Against Collection Units ===')
-        nameCheck = nu.validCollUnit(cur,
-                                     df,
+        nameCheck = nu.valid_collectionunit(cur,
                                      yml_dict,
-                                     'ndb.sites.geom',
-                                     'ndb.collectionunits.handle')
+                                     csv_template)
         logfile = logfile + nameCheck['message']
         testset['colunits'] = nameCheck['pass']
 

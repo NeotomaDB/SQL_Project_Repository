@@ -1,5 +1,5 @@
 from .retrieveDict import retrieveDict
-from .validColumn import validColumn, cleanColumn
+from .valid_column import valid_column, cleanColumn
 def validHorizon(df, yml_dict, depth_str, horizon_str):
     """_Is the dated horizon one of the accepted dates?_
 
@@ -14,13 +14,13 @@ def validHorizon(df, yml_dict, depth_str, horizon_str):
                 'index': [],
                 'message': []}
     depthD = retrieveDict(yml_dict, depth_str)
-    depth_message = validColumn(df, depthD)
+    depth_message = valid_column(df, depthD)
     depths = cleanColumn(df, depthD)
     if len(depth_message) >0:
         response['message'].append(depth_message)
 
     horizonD = retrieveDict(yml_dict, horizon_str)
-    horizon_message = validColumn(df, horizonD)
+    horizon_message = valid_column(df, horizonD)
     horizon = cleanColumn(df, horizonD)
     if len(horizon_message) >0:
         response['message'].append(horizon_message)
