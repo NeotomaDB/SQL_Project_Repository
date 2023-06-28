@@ -1,9 +1,8 @@
 from .retrieveDict import retrieveDict
-from .validColumn import validColumn, cleanColumn
-import pandas as pd
+from .valid_column import valid_column, cleanColumn
+from .yaml_values import yaml_values
 
-#def validSite(cur, coords, hemisphere, sitename):
-def valid_site(cur, yml_dict, df, sites_str):
+def valid_site(cur, yml_dict, csv_template):
     """_Is the site a valid new site?_
     The function accepts a set of coordinates, a site name, and the appropriate hemisphere and 
     returns a dict with the properties:
@@ -29,57 +28,59 @@ def valid_site(cur, yml_dict, df, sites_str):
                 'message': []}
 
     ## Retrieve the fields needed from the yml.
-    coordsD = retrieveDict(yml_dict, 'ndb.sites.geom')
-    coords_message = validColumn(df, coordsD)
-    coords = cleanColumn(df, coordsD)
-    if len(coords_message) >0:
-        response['message'].append(coords_message)
-
-    sitenameD = retrieveDict(yml_dict, sites_str)
-    sitename_message = validColumn(df, sitenameD)
-    sitename = cleanColumn(df, sitenameD)
-    if len(sitename_message) >0:
-        response['message'].append(sitename_message)
-    
-    # Need to evaluate whether it's a new site, or not.
-    sitelist = []
-    if len(coords) != 1:
-        # Finish the function:
-        response['message'].append('✗ Site coordinates are improperly formatted.')
+    coords = yaml_values(yml_dict, csv_template, 'ndb.sites.geom')
+    try:
+        assert len(coords) == 1
+    except AssertionError:
+        if len(coords) > 1:
+            response['message'].append('✗ There are multiple columns mapped to coordinates in your template.')
+        else:
+            response['message'].append('✗ There are no columns mapped to coordinates in your template.')
         return response
-    coo = coords[0]
-    coordDict = {'lat': [float(i.strip()) for i in coo.split(',')][0],
-                'long': [float(i.strip()) for i in coo.split(',')][1]}
+    sitename = yaml_values(yml_dict, csv_template, 'ndb.sites.sitename')
+    try:
+        assert len(sitename) == 1
+    except AssertionError:
+        if len(sitename) > 1:
+            response['message'].append('✗ There are multiple columns mapped to sitenames in your template.')
+        else:
+            response['message'].append('✗ There are no columns mapped to sitenames in your template.')
+
+    # Need to evaluate whether it's a new site, or not.
+
+    coord_list = [float(i) for i in coords[0].get('values')[0].split(',')]
+    coord_dict = {'lat': coord_list[0],
+                'long': coord_list[1]}
     # Get the allowed hemispheres for the record.
     hemis = ""
-    if coordDict['lat'] >= 0:
+    if coord_dict['lat'] >= 0:
         hemis+="N"
     else:
         hemis+="S"
-    if coordDict['long'] >= 0:
+    if coord_dict['long'] >= 0:
         hemis+="E"
     else:
         hemis+="W"
-    response['message'].append(f'? This set is expected to be in the {hemis} hemisphere.')  
-    
-    closeSite = """
+    response['message'].append(f'? This set is expected to be in the {hemis} hemisphere.')
+
+    close_site = """
         SELECT st.*,
             ST_SetSRID(st.geog::geometry, 4326)::geography <-> ST_SetSRID(ST_Point(%(long)s, %(lat)s), 4326)::geography AS dist
         FROM   ndb.sites AS st
         WHERE ST_SetSRID(st.geog::geometry, 4326)::geography <-> ST_SetSRID(ST_Point(%(long)s, %(lat)s), 4326)::geography < 10000
         ORDER BY dist;"""
-    cur.execute(closeSite, coordDict)
-    closeSites = cur.fetchall()
-    if len(closeSites) > 0:
+    cur.execute(close_site, coord_dict)
+    close_sites = cur.fetchall()
+    if len(close_sites) > 0:
         # There are sites within 10km get the siteid, name, coordinates and distance.
         response['valid'] = False
         response['message'].append('?  One or more sites exist close to the requested site.')
-        for i in closeSites:
+        for i in close_sites:
             site = {'id': str(i[0]), 'name': i[1], 'coordlo': str(i[2]), 'coordla': str(i[3]), 'distance (m)': round(i[13], 0)}
             response['sitelist'].append(site)
         # extract only the names of the sites
-        sitenamesList = [item['name'] for item in response['sitelist']]
-        response['matched']['namematch'] = any(x in sitename for x in sitenamesList)
+        sitenames_list = [item['name'] for item in response['sitelist']]
+        response['matched']['namematch'] = any(x in sitename for x in sitenames_list)
         # Distmatch should be independent of the sitename
         response['matched']['distmatch'] = next((item['distance (m)'] for item in response['sitelist']), None) == 0
         if response['matched']['namematch'] and response['matched']['distmatch']:
@@ -91,7 +92,7 @@ def valid_site(cur, yml_dict, df, sites_str):
         elif response['matched']['distmatch']:
             response['valid'] = False
             response['message'].append('?  Location matches, but site names differ.')
-        if response['valid'] == False:
+        if response['valid'] is False:
             for i in response['sitelist']:
                 response['message'].append(f"  * siteid: {i['id']};  sitename: {i['name']:<25}; distance (m): {i['distance (m)']:<7} coords: [{i['coordla']}, {i['coordlo']}]")
     else:

@@ -1,8 +1,8 @@
 import pandas as pd
 
-def validColumn(df, dict1):
+def valid_column(yaml_vals):
     response = {'message': []}
-    column_name = dict1['column']
+    
     if dict1['type']=='number':
         if not pd.api.types.is_numeric_dtype(df[column_name]):
             response['message'].append('✗ Site {column_name} is not properly formatted.')
