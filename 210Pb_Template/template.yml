@@ -301,14 +301,20 @@ metadata:
     repeat: True
     notes:
   - column: Error..137Cs.
-    neotoma: ndb.data.value
+    neotoma:
+      field: ndb.variableunits.variableunits
+      taxonname: 137Cs
+      linkedcolumn: Error..137Cs.
     required: False
     type: number
     vocab:
     repeat:
     notes:
   - column: Error..137Cs..Units 
-    neotoma: ndb.variableunits.variableunits
+    neotoma:
+      field: ndb.variableunits.variableunits
+      taxonname: 137Cs
+      linkedcolumn: Error..137Cs.
     required: False
     type: string
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
