@@ -1,5 +1,4 @@
 from .retrieveDict import retrieveDict
-from .valid_column import cleanColumn
 from .yaml_values import yaml_values
 import datetime
 

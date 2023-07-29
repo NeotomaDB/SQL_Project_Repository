@@ -1,5 +1,3 @@
-from .retrieveDict import retrieveDict
-from .valid_column import valid_column, cleanColumn
 from .yaml_values import yaml_values
 
 def valid_site(cur, yml_dict, csv_template):
