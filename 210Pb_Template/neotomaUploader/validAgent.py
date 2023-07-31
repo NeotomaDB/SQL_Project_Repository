@@ -1,8 +1,7 @@
 from .yaml_values import yaml_values
 from .valid_column import valid_column
 import re
-#def validAgent(cur, agentname):
-#def validAgent(cur, df, yml_dict, str_contact):
+
 def validAgent(cur, csv_template, yml_dict):
     
     """_Get user agent or contact from Neotoma_
