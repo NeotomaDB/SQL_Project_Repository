@@ -13,19 +13,19 @@ metadata:
   - column: Core.number.or.code
     neotoma: ndb.collectionunits.handle
     required: True
-    type: string/numeric
+    type: string/number
     link: https://open.neotomadb.org/dbschema/tables/collectionunits.html
     vocab:
     repeat: False
     notes:
   - column: Publications
-    neotoma: ndb.publications.citation
+    neotoma: ndb.publications
     required: True
     type: string
     link:
     vocab:
     repeat:
-    notes: Would it be easier to get a number of DOIs?
+    notes: Would it be easier to get a number of DOIs
   - column: Location
     neotoma: ndb.geopoliticalunits
     required: True
@@ -48,7 +48,7 @@ metadata:
     repeat: True
     notes:
   - column: Site.coordinates
-    neotoma: ndb.collectionunits.geom
+    neotoma: '???'
     required: True
     type: string
     vocab:
@@ -147,7 +147,9 @@ metadata:
     repeat: True
     notes:
   - column: Dry.Density
-    neotoma: ndb.data.value
+    neotoma: ndb.values
+    taxonid: 5782
+    taxonname: bulk density
     required: False
     type: number
     vocab:
@@ -161,7 +163,9 @@ metadata:
     repeat: True
     notes:
   - column: Cumulative.dry.mass
-    neotoma: ndb.data.value
+    neotoma: ndb.values
+    taxonid: '???'
+    taxonname: cumulative dry mass
     required: False
     type: number
     vocab:
@@ -175,7 +179,14 @@ metadata:
     repeat: True
     notes:
   - column: Total.210Pb.Alpha..synonym.Total.210Po.
-    neotoma: ndb.data.value
+    neotoma: ndb.values
+    taxonid: '???'
+    taxonname: 210Pb/210Po
+    unitcolumn: Total.210Pb.Alpha..synonym.Total.210Po..Units
+    uncertainty: 
+      uncertaintycolumn: Error..total.210Pb.alpha.
+      uncertaintybasis: 
+      unitcolumn: Error..total.210Pb.alpha..units
     required: False
     type: number
     vocab:
@@ -189,7 +200,9 @@ metadata:
     repeat:
     notes:
   - column: Error..total.210Pb.alpha.
-    neotoma: ndb.data.value
+    neotoma: ndb.values
+    taxonid: '???'
+    taxonname: 210Pb/210Po
     required: False
     type: number
     vocab:
@@ -203,7 +216,14 @@ metadata:
     repeat:
     notes:
   - column: Total.210Pb.Gamma
-    neotoma: ndb.data.value
+    neotoma: ndb.values
+    taxonid: '???'
+    taxonname: 210Pb
+    unitcolumn: Total.210Pb.Gamma.Units
+    uncertainty: 
+      uncertaintycolumn: Error..total.210Pb.Gamma.
+      uncertaintybasis: 
+      unitcolumn: Error..total.210Pb.Gamma..Units
     required: False
     type: number
     vocab:
@@ -217,7 +237,9 @@ metadata:
     repeat: True
     notes:
   - column: Error..total.210Pb.Gamma.
-    neotoma: ndb.data.value
+    neotoma: ndb.values
+    taxonid: '???'
+    taxonname: 210Pb
     required: False
     type: number
     vocab:
@@ -231,7 +253,14 @@ metadata:
     repeat: True
     notes:
   - column: X214Pb
-    neotoma: ndb.data.value
+    neotoma: ndb.values
+    taxonid: '???'
+    taxonname: 214Pb
+    unitcolumn: X214Pb.Units
+    uncertainty: 
+      uncertaintycolumn: Error..214Pb.
+      uncertaintybasis: 
+      unitcolumn: Error..214Pb..Units
     required: False
     type: number
     vocab:
@@ -245,7 +274,9 @@ metadata:
     repeat: True
     notes:
   - column: Error..214Pb.
-    neotoma: ndb.data.value
+    neotoma: ndb.values
+    taxonid: '???'
+    taxonname: 214Pb
     required: False
     type: number
     vocab:
@@ -259,7 +290,14 @@ metadata:
     repeat: True
     notes:
   - column: X214Bi
-    neotoma: ndb.data.value
+    neotoma: ndb.values
+    taxonid: '???'
+    taxonname: 214Bi
+    unitcolumn: X214Bi.Units
+    uncertainty: 
+      uncertaintycolumn: Error.214Bi
+      uncertaintybasis: 
+      unitcolumn: Error..214Bi..Units
     required: False
     type: number
     vocab:
@@ -273,7 +311,9 @@ metadata:
     repeat: True
     notes:
   - column: Error.214Bi
-    neotoma: ndb.data.value
+    neotoma: ndb.values
+    taxonid: '???'
+    taxonname: 214Bi
     required: False
     type: number
     vocab:
@@ -287,7 +327,14 @@ metadata:
     repeat: True
     notes:
   - column: X137Cs
-    neotoma: ndb.data.value
+    neotoma: ndb.values
+    taxonid: '???'
+    taxonname: '137Cs'
+    unitcolumn: X137Cs.Units
+    uncertainty: 
+      uncertaintycolumn: Error..137Cs.
+      uncertaintybasis: 
+      unitcolumn: Error..137Cs..Units 
     required: False
     type: number
     vocab:
@@ -301,27 +348,24 @@ metadata:
     repeat: True
     notes:
   - column: Error..137Cs.
-    neotoma:
-      field: ndb.variableunits.variableunits
-      taxonname: 137Cs
-      linkedcolumn: Error..137Cs.
+    neotoma: ndb.values
+    taxonid: '???'
+    taxonname: 137Cs
     required: False
     type: number
     vocab:
     repeat:
     notes:
   - column: Error..137Cs..Units 
-    neotoma:
-      field: ndb.variableunits.variableunits
-      taxonname: 137Cs
-      linkedcolumn: Error..137Cs.
+    neotoma: ndb.variableunits.variableunits
     required: False
     type: string
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
     repeat: True
     notes:
   - column: Assigned.137Cs.Date
-    neotoma: ndb.data.value
+    neotoma: ndb.values
+    unitcolumn: Assigned.137Cs.Date.Units
     required: False
     type: number
     vocab:
@@ -335,7 +379,14 @@ metadata:
     repeat: True
     notes:
   - column: Supported.210Pb
-    neotoma: ndb.data.value
+    neotoma: ndb.values
+    taxonid: '???'
+    taxonname: 210Pb/210Po
+    unitcolumn: Supported.210Pb.Units
+    uncertainty:
+      uncertaintycolumn: Error..Supported.210Pb..1SD
+      uncertaintybasis:
+      unitcolumn: Error..Supported.210Pb..1SD.Units
     required: False
     type: number
     vocab:
@@ -349,7 +400,9 @@ metadata:
     repeat: True
     notes:
   - column: Error..Supported.210Pb..1SD
-    neotoma: ndb.data.value
+    neotoma: ndb.values
+    taxonid: '???'
+    taxonname: 210Pb/210Po
     required: False
     type: number
     vocab:
@@ -363,7 +416,14 @@ metadata:
     repeat: True
     notes:
   - column: Unsupported.210Pb
-    neotoma: ndb.data.value
+    neotoma: ndb.values
+    taxonid: '???'
+    taxonname: 210Pb/210Po
+    unitcolumn: Unsupported.210Pb.Units
+    uncertainty:
+      uncertaintycolumn: Error..Unsupported.210Pb..1SD
+      uncertaintybasis:
+      unitcolumn: Error..Unsupported.210Pb..1SD.Units
     required: False
     type: number
     vocab:
@@ -377,7 +437,9 @@ metadata:
     repeat: True
     notes:
   - column: Error..Unsupported.210Pb..1SD
-    neotoma: ndb.data.value
+    neotoma: ndb.values
+    taxonid: '???'
+    taxonname: 210Pb/210Po
     required: False
     type: number
     vocab:
@@ -391,35 +453,51 @@ metadata:
     repeat: True
     notes:
   - column: X210Pb.Date
-    neotoma: ndb.sampleages.age
+    neotoma: ndb.values
+    taxonid: '???'
+    taxonname: 210Pb date
+    unitcolumn: X210Pb.Date.Units
+    uncertainty:
+      uncertaintycolumn: Error..210Pb.Date.
+      uncertaintybasis: Error..210Pb.Date..1SD.Units
+      unitcolumn:
     required: False
     type: string
     vocab:
     repeat:
     notes:
   - column: X210Pb.Date.Units
-    neotoma: ndb.agetypes.agetype
+    neotoma: ndb.variableunits.variableunits
     required: False
     type: string
     vocab: ['CE/BCE', 'cal yr BP', 'Cal yr BP']
     repeat:
     notes:
   - column: Error..210Pb.Date.
-    neotoma: ndb.sampleages.ageerror
+    neotoma: ndb.values
+    taxonid: '???'
+    taxonname: 210Pb date
     required: False
     type: number
     vocab:
     repeat:
-    notes: This is the error, not the ageyounger/ageolder that we use in the model.
+    notes:
   - column: Error..210Pb.Date..1SD.Units
-    neotoma: ndb.agetypes.agetype
+    neotoma: ndb.variableunits.variableunits
     required: False
     type: string
     vocab: ['CE/BCE', 'cal yr BP', 'Cal yr BP']
     repeat: True
     notes:
   - column: DMAR
-    neotoma: ndb.data.value
+    neotoma: ndb.values
+    taxonid: '???'
+    taxonname: dry mass accumulation rate
+    unitcolumn: DMAR.Units
+    uncertainty:
+      uncertaintycolumn: Error..DMAR.
+      uncertaintybasis:
+      unitcolumn: Error..DMAR..Units`
     required: False
     type: number
     vocab:
@@ -433,7 +511,9 @@ metadata:
     repeat:
     notes:
   - column: Error..DMAR.
-    neotoma: ndb.data.value
+    neotoma: ndb.values
+    taxonid: '???'
+    taxonname: dry mass accumulation rate
     required: False
     type: number
     vocab:
