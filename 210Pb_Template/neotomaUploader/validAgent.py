@@ -1,9 +1,8 @@
-from .yaml_values import yaml_values
-from .valid_column import valid_column
-import re
+from .retrieveDict import retrieveDict
+from .valid_column import valid_column, cleanColumn
+#def validAgent(cur, agentname):
 
-def validAgent(cur, csv_template, yml_dict):
-    
+def validAgent(cur, df, yml_dict, str_contact):
     """_Get user agent or contact from Neotoma_
 
     Args:
