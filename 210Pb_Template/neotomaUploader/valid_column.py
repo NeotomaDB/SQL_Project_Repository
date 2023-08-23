@@ -18,7 +18,8 @@ def is_numeric(value):
             return True
         except ValueError:
             return False
-        
+
+
 def valid_column(pointer):
     response = {'message': []}
     allowed_types = {

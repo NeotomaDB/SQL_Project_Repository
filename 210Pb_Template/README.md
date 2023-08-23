@@ -41,7 +41,7 @@ Each entry in the `metadata` tab can have the following entries:
 * `column`:  The column of the spreadsheet that is being described.
 * `neotoma`: A database table and column combination from the database schema.
 * `vocab`: If there is a fixed vocabulary for the column, include the possible terms here.
-* `repeat`: [`true`, `false`] Is each entry unique and tied to the row, or is this a set of entries associated with the site?
+* `repeat`: [`true`, `false`] Is each entry unique and tied to the row (`false`, this isn't a set of repeated values), or is this a set of entries associated with the site (`true`, there is only a single value that repeats throughout)?
 * `type`: [`integer`, `numeric`, `date`] The variable type for the field.
 * `ordered`: [`true`, `false`] Does the order of the column matter?
 

@@ -6,11 +6,11 @@ import itertools
 import argparse
 import os
 
-from .cleanCol import cleanCol
+from .clean_column import clean_column
 from .yaml_values import yaml_values
 from .insert_site import insert_site
 from .insertAnalysisUnit import insertAnalysisUnit
-from .validAgent import validAgent
+from .valid_agent import valid_agent
 from .valid_date import valid_date
 from .read_csv import read_csv
 from .validUnits import validUnits
