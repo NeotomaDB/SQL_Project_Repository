@@ -1,4 +1,4 @@
-def cleanCol(column, template, clean = True):
+def clean_column(column, template, clean = True):
     """_cleanCol_
 
     Args:

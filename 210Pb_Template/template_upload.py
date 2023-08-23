@@ -6,7 +6,7 @@ import os
 
 load_dotenv()
 
-data = json.loads(os.getenv('PGDB_HOLDING'))
+data = json.loads(os.getenv('PGDB_LOCAL'))
 
 conn = psycopg2.connect(**data, connect_timeout = 5)
 
@@ -15,19 +15,19 @@ cur = conn.cursor()
 args = nu.parseArguments()
 
 if args.get('data') == 1:
-    filename = 'data/Speckled Trout 2006 GRPO.csv'
+    FILENAME = 'data/Speckled Trout 2006 GRPO.csv'
 else:
-    filename = 'data/Speckled Trout 2006 GRPO.csv'
+    FILENAME = 'data/Speckled Trout 2006 GRPO.csv'
 
 logfile = []
-hashcheck = nu.hashFile(filename)
-filecheck = nu.checkFile(filename)
+hashcheck = nu.hashFile(FILENAME)
+filecheck = nu.checkFile(FILENAME)
 
 if hashcheck['pass'] is False and filecheck['pass'] is False:
-    csv_template = nu.read_csv(filename)
+    csv_template = nu.read_csv(FILENAME)
     logfile.append("File must be properly validated before it can be uploaded.")
 else:
-    csv_template = nu.read_csv(filename)
+    csv_template = nu.read_csv(FILENAME)
     # This possibly needs to be fixed. How do we know that there is one or more header rows?
 
 uploader = {}
@@ -36,56 +36,30 @@ yml_dict = nu.ymlToDict(yml_file=args['yml'])
 yml_data = yml_dict['metadata']
 
 # Verify that the CSV columns and the YML keys match
-csvValid = nu.csvValidator(filename = filename,
+csvValid = nu.csvValidator(filename = FILENAME,
                             yml_data = yml_data)
-
-# Cleaning fields to unique values:
-geog = nu.cleanCol('Location', csv_template)
-piname = nu.cleanCol('Principal.Investigator.s.', csv_template)
-analystname = nu.cleanCol('Analyst', csv_template)
-modelername = nu.cleanCol('Modeler', csv_template)
-pubname = nu.cleanCol('Publications', csv_template)
-collunits = nu.cleanCol('Core.number.or.code', csv_template)
-colldate = nu.cleanCol('Date.of.core.collection', csv_template)
-location = nu.cleanCol('Coordinate.precision', csv_template)
-depths = nu.cleanCol('Depth', csv_template, False)
-thicks = nu.cleanCol('Thickness', csv_template, False)
-dateunits = nu.cleanCol('X210Pb.Date.Units', csv_template)
-ages = nu.cleanCol('X210Pb.Date', csv_template, False)
-ageerror = nu.cleanCol('Error..210Pb.Date.', csv_template, False)
-agemodel = nu.cleanCol('X210.LeadModel', csv_template)
-chronnotes = nu.cleanCol('X210.Lead.Model.Notes', csv_template)
-datasetname = nu.cleanCol('Core.number.or.code', csv_template)
-
-dthick = []
-# We need to arrange the depths, thicknesses and ages.
-for i, value in enumerate(depths):
-    dthick.append({'depth': value,
-                   'thickness': thicks[i],
-                   'age': ages[i],
-                   'error': ageerror[i]})
 
 logfile.append('=== Inserting new Site ===')
 uploader['siteid'] = nu.insert_site(cur = cur,
                                    yml_dict = yml_dict,
                                    csv_template = csv_template)
 
-logfile.append('siteid: %s' % uploader['siteid'])
+logfile.append(f"siteid: {uploader['siteid']}")
 
 # logfile.append('=== Inserting Site Geopol ===')
 # # uploader['geopolid'] = nu.insertGeoPol(cur = cur, uploader = uploader)
 # # logfile.append('Geopolitical Unit: %s' % uploader['geopolid'])
 
 logfile.append('=== Inserting Collection Units ===')
-uploader['collunitid'] = nu.insertCollUnit(cur = cur,
+uploader['collunitid'] = insert_collunit(cur = cur,
                                            yml_dict = yml_dict,
                                            csv_template = csv_template,
                                            uploader = uploader)
 
-logfile.append('collunitid: %s' % uploader['collunitid'])
+logfile.append(f"collunitid: {uploader['collunitid']}")
 
 logfile.append('=== Inserting Analysis Units ===')
-uploader['anunits'] = nu.insertAnalysisUnit(cur = cur,
+uploader['anunits'] = nu.insert_analysisunit(cur = cur,
                                             yml_dict = yml_dict,
                                             csv_template = csv_template,
                                             uploader = uploader)
