@@ -369,6 +369,8 @@ metadata:
     notes: null
     required: false
     rowwise: true
+    taxonid: '???'
+    taxonname: 137Cs date
     type: number
     unitcolumn: Assigned.137Cs.Date.Units
     vocab: null

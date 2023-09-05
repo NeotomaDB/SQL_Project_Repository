@@ -106,6 +106,13 @@ for filename in filenames:
         testset['datinghorizon'] = horizoncheck['pass']
         logfile = logfile + horizoncheck['message']
 
+        ########### Taxa names:
+        logfile.append('=== Checking Against Taxa Names ===')
+        namecheck = nu.valid_taxa(cur,
+                                  csv_template,
+                                  yml_dict)
+        logfile = logfile + namecheck['message']
+
         ########### Write to log.
         with open(filename + '.log', 'w', encoding = "utf-8") as writer:
             for i in logfile:

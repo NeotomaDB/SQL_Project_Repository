@@ -32,11 +32,11 @@ def valid_column(pointer):
     if callable(allowed_types[value_type]):
         # If the type is a date check, call the function for each value
         result = all(allowed_types[value_type](value) for value in values_list)
+
     else:
         # If the type is a standard Python type, perform the isinstance check
         result = all(isinstance(value, allowed_types[value_type]) for value in values_list)
     if result is False:
-        print(pointer)
         response['message'].append(f'✗ {pointer["column"]} is not properly formatted.')
         response['message'] = ''.join(response['message'])
     return response['message']
