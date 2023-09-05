@@ -25,8 +25,8 @@ def insertChronology(cur, collunitid, agetype, agemodel, ages,
         _agemodel := %(agemodel)s,
         _ageboundyounger := %(maxage)s,
         _ageboundolder := %(minage)s)"""
-    getCont = """SELECT contactid FROM ndb.contacts WHERE %(contactname)s %% contactname;"""    
-    cur.execute(getCont, {'contactname': contactname[0]})
+    get_cont = """SELECT contactid FROM ndb.contacts WHERE %(contactname)s %% contactname;"""    
+    cur.execute(get_cont, {'contactname': contactname[0]})
     contactid = cur.fetchone()[0]
     if agetype == 'cal yr BP':
         agetypeid = 2

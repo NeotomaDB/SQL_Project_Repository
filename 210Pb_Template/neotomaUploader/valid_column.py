@@ -1,26 +1,45 @@
-import pandas as pd
+import datetime
 
-def valid_column(yaml_vals):
+def is_valid_date(value):
+    try:
+        datetime.strptime(value, '%Y-%m-%d')
+        return True
+    except ValueError:
+        return False
+
+def is_numeric(value):
+    '''check if the values can be casted properly as numbers'''
+    try:
+        int(value)
+        return True
+    except ValueError:
+        try:
+            float(value)
+            return True
+        except ValueError:
+            return False
+
+
+def valid_column(pointer):
     response = {'message': []}
+    allowed_types = {
+        'string': str,
+        'number': is_numeric,
+        'date': is_valid_date
+    }
+    value_type = pointer.get('type')
+    values_list = pointer.get('values')
     
-    if dict1['type']=='number':
-        if not pd.api.types.is_numeric_dtype(df[column_name]):
-            response['message'].append('✗ Site {column_name} is not properly formatted.')
-    if dict1['type']=='string':
-        if not pd.api.types.is_string_dtype(df[column_name]):
-            response['message'].append('✗ Site {column_name} is not properly formatted.')
-    if dict1['type']=='date':
-        if not pd.api.types.is_datetime64_any_dtype(df[column_name]):
-            response['message'].append('✗ Site {column_name} is not properly formatted.')
-    message = ' '.join(response['message'])
-
-    return response['message']
-
-def cleanColumn(df, dict1):
-    column_name = dict1['column']
-    if dict1['repeat']==True:
-        column_vals = df[column_name].tolist()
+    if callable(allowed_types[value_type]):
+        # If the type is a date check, call the function for each value
+        result = all(allowed_types[value_type](value) for value in values_list)
     else:
-        column_vals = list(df[column_name].unique())
-    return column_vals
+        # If the type is a standard Python type, perform the isinstance check
+        result = all(isinstance(value, allowed_types[value_type]) for value in values_list)
+ 
+    if result is False:
+        print(pointer)
+        response['message'].append(f'✗ {pointer["column"]} is not properly formatted.')
 
+        response['message'] = ''.join(response['message'])
+    return response['message']
