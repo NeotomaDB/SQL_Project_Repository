@@ -1,7 +1,7 @@
 from .yaml_values import yaml_values
 from .valid_column import valid_column
 
-def validHorizon(yml_dict, csv_template):
+def valid_horizon(yml_dict, csv_template):
     """_Is the dated horizon one of the accepted dates?_
 
     Args:

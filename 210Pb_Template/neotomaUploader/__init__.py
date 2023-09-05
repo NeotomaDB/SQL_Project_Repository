@@ -17,7 +17,7 @@ from .validUnits import validUnits
 from .valid_site import valid_site
 from .valid_collectionunit import valid_collectionunit
 from .validGeoPol import validGeoPol
-from .validHorizon import validHorizon
+from .valid_horizon import valid_horizon
 from .hash_file import hash_file
 from .check_file import check_file
 from .insertGeoPol import insertGeoPol

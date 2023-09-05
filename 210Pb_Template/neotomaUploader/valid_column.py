@@ -8,7 +8,7 @@ def is_valid_date(value):
         return False
 
 def is_numeric(value):
-    '''check if the values can be casted properly as numbers'''
+    '''check if the values can be cast properly as numbers'''
     try:
         int(value)
         return True
@@ -29,17 +29,14 @@ def valid_column(pointer):
     }
     value_type = pointer.get('type')
     values_list = pointer.get('values')
-    
     if callable(allowed_types[value_type]):
         # If the type is a date check, call the function for each value
         result = all(allowed_types[value_type](value) for value in values_list)
     else:
         # If the type is a standard Python type, perform the isinstance check
         result = all(isinstance(value, allowed_types[value_type]) for value in values_list)
- 
     if result is False:
         print(pointer)
         response['message'].append(f'✗ {pointer["column"]} is not properly formatted.')
-
         response['message'] = ''.join(response['message'])
     return response['message']

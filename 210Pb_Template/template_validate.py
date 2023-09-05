@@ -93,7 +93,7 @@ for filename in filenames:
         #testset['geopol'] = namecheck['pass']
 
         ########### PI names:
-        logfile.append('=== Checking Against Dataset Names ===')
+        logfile.append('=== Checking Against Contact Names ===')
         namecheck = nu.valid_agent(cur,
                                   csv_template,
                                   yml_dict)
@@ -101,7 +101,7 @@ for filename in filenames:
 
         ########### Make sure the dating horizon is in the analysis units:
         logfile.append('=== Checking the Dating Horizon is Valid ===')
-        horizoncheck = nu.validHorizon(yml_dict, 
+        horizoncheck = nu.valid_horizon(yml_dict,
                                        csv_template)
         testset['datinghorizon'] = horizoncheck['pass']
         logfile = logfile + horizoncheck['message']
