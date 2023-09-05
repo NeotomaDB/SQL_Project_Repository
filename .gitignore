@@ -1,3 +1,4 @@
+venv/
 
 connect_remote.json
 
@@ -26,8 +27,12 @@ ORCID/.httr-oauth
 */*.DS_Store
 *.DS_Store
 
+
+
 */application.log
 **/application.log
 210Pb_Template/.Renviron
 
-210Pb_Template/.env
+.env
+Bulk Uploader Notes.gdoc alias
+.gitignore
