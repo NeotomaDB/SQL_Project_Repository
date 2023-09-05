@@ -1,6 +1,6 @@
 import argparse
 import os
-def parseArguments():
+def parse_arguments():
     """_Parse commandline arguments to the Uploader_
        
        Args:
@@ -27,14 +27,9 @@ def parseArguments():
     args = parser.parse_args()
 
     if not os.path.isdir(args.data):
-        raise FileNotFoundError("There is no directory named '" +
-                                args.data +
-                                "' within the current path. Please set the --data property.")
+        raise FileNotFoundError(f"There is no directory named '{args.data}' within the current path.")
 
     if not os.path.isfile(args.template):
-        raise FileNotFoundError("The file '" +
-                                args.template +
-                                "' could not be found within the current path." +
-                                " Please set the --template property.")
+        raise FileNotFoundError(f"The file '{args.template}' could not be found within the current path.")
 
     return {'data': args.data, 'yml': args.template}

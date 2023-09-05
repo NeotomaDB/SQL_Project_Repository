@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 import neotomaUploader as nu
 
 # Obtain arguments and parse them to handle command line arguments
-args = nu.parseArguments()
+args = nu.parse_arguments()
 
 load_dotenv()
 
@@ -29,22 +29,22 @@ for filename in filenames:
     print(filename)
     logfile = []
 
-    hashcheck = nu.hashFile(filename)
-    filecheck = nu.checkFile(filename)
+    hashcheck = nu.hash_file(filename)
+    filecheck = nu.check_file(filename)
     logfile = logfile + hashcheck['message'] + filecheck['message']
 
     if hashcheck['pass'] and filecheck['pass']:
         print("  - File is correct and hasn't changed since last validation.")
     else:
         # Load the yml template as a dictionary
-        yml_dict = nu.ymlToDict(yml_file=args['yml'])
+        yml_dict = nu.yml_to_dict(yml_file=args['yml'])
         yml_data = yml_dict['metadata']
 
         # Obtain the unitcols and units to be used
         vocab_ = nu.vocabDict(yml_data)
 
         # Verify that the CSV columns and the YML keys match
-        csvValid = nu.csvValidator(filename = filename,
+        csvValid = nu.csv_validator(filename = filename,
                                    yml_data = yml_data)
         # Log if the file is valid
         logfile = logfile + csvValid
@@ -94,7 +94,7 @@ for filename in filenames:
 
         ########### PI names:
         logfile.append('=== Checking Against Dataset Names ===')
-        namecheck = nu.validAgent(cur,
+        namecheck = nu.valid_agent(cur,
                                   csv_template,
                                   yml_dict)
         logfile = logfile + namecheck['message']

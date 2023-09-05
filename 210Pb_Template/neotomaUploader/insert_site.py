@@ -1,5 +1,6 @@
 import logging
 from .yaml_values import yaml_values
+from .pull_params import pull_params
 
 def insert_site(cur, yml_dict, csv_template):
     """_Insert a site to Neotoma_
@@ -35,7 +36,7 @@ def insert_site(cur, yml_dict, csv_template):
         logging.error("The template must contain a sitename and coordinates.", exc_info=True)
     params = ["sitename", "altitude", "area", "sitedescription", "notes", "geog"]
     inputs = pull_params(params, yml_dict, csv_template, 'ndb.sites')
-    cur.execute(,
+    cur.execute(site_query,
                 {'sitename': sitename_dict[0].get('values')[0], 'ew': coords[1], 'ns': coords[0]})
     siteid = cur.fetchone()[0]
     return siteid

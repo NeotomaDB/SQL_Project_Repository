@@ -12,7 +12,7 @@ conn = psycopg2.connect(**data, connect_timeout = 5)
 
 cur = conn.cursor()
 
-args = nu.parseArguments()
+args = nu.parse_arguments()
 
 if args.get('data') == 1:
     FILENAME = 'data/Speckled Trout 2006 GRPO.csv'
@@ -20,8 +20,8 @@ else:
     FILENAME = 'data/Speckled Trout 2006 GRPO.csv'
 
 logfile = []
-hashcheck = nu.hashFile(FILENAME)
-filecheck = nu.checkFile(FILENAME)
+hashcheck = nu.hash_file(FILENAME)
+filecheck = nu.check_file(FILENAME)
 
 if hashcheck['pass'] is False and filecheck['pass'] is False:
     csv_template = nu.read_csv(FILENAME)
@@ -36,7 +36,7 @@ yml_dict = nu.ymlToDict(yml_file=args['yml'])
 yml_data = yml_dict['metadata']
 
 # Verify that the CSV columns and the YML keys match
-csvValid = nu.csvValidator(filename = FILENAME,
+csvValid = nu.csv_validator(filename = FILENAME,
                             yml_data = yml_data)
 
 logfile.append('=== Inserting new Site ===')

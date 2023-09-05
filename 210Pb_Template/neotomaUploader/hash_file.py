@@ -1,7 +1,7 @@
 import hashlib
 import os
 
-def hashFile(filename):
+def hash_file(filename):
     response = {'pass': False, 'hash': None, 'message': []}
     logfile = filename + '.log'
     response['hash'] = hashlib.md5(open(filename,'rb').read()).hexdigest()

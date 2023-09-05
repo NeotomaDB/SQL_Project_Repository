@@ -1,4 +1,4 @@
-from .retrieveDict import retrieveDict
+from .retrieve_dict import retrieve_dict
 from .valid_column import valid_column
 #def validAgent(cur, agentname):
 
