@@ -1,4 +1,4 @@
-from .retrieveDict import retrieveDict
+from .retrieve_dict import retrieve_dict
 from .yaml_values import yaml_values
 import datetime
 import re

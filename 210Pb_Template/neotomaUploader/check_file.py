@@ -1,7 +1,7 @@
 import re
 import os
 
-def checkFile(filename):
+def check_file(filename):
     """_Validate the existence and result of a logfile._
 
     Args:

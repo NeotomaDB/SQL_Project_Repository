@@ -1,12 +1,12 @@
 import warnings
 import logging
 import re
-def retrieveDict(yml_dict, sqlColumn):
+def retrieve_dict(yml_dict, sql_column):
     """_Get Dictionary for a Neotoma column using the YAML template_
 
     Args:
         yml_dict (_dict_): _The YAML template object imported by the user._
-        sqlColumn (_str_): _A character string indicating the SQL column to be matched._
+        sql_column (_str_): _A character string indicating the SQL column to be matched._
 
     Returns:
         list_: _A list of all dictionaries associated with a particular Neotoma table/column_
@@ -19,7 +19,7 @@ def retrieveDict(yml_dict, sqlColumn):
     except AssertionError:
         logging.error("The yml_dict must be a dict object (not a list) containing the key 'metadata'.", exc_info=True)
     #result = [d for d in yml_dict['metadata'] if d['neotoma'] == sqlColumn]
-    result= [d for d in yml_dict['metadata'] if re.search(sqlColumn, d['neotoma'])]
+    result= [d for d in yml_dict['metadata'] if re.search(sql_column, d['neotoma'])]
     if result is None:
         warnings.warn("No matching dictionary entry found.")
     else:
