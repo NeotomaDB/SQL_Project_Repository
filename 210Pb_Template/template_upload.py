@@ -1,8 +1,8 @@
 import json
+import os
 import psycopg2
 from dotenv import load_dotenv
 import neotomaUploader as nu
-import os
 
 load_dotenv()
 
@@ -32,11 +32,11 @@ else:
 
 uploader = {}
 
-yml_dict = nu.ymlToDict(yml_file=args['yml'])
+yml_dict = nu.yml_to_dict(yml_file=args['yml'])
 yml_data = yml_dict['metadata']
 
 # Verify that the CSV columns and the YML keys match
-csvValid = nu.csv_validator(filename = FILENAME,
+csv_valid = nu.csv_validator(filename = FILENAME,
                             yml_data = yml_data)
 
 logfile.append('=== Inserting new Site ===')
@@ -51,7 +51,7 @@ logfile.append(f"siteid: {uploader['siteid']}")
 # # logfile.append('Geopolitical Unit: %s' % uploader['geopolid'])
 
 logfile.append('=== Inserting Collection Units ===')
-uploader['collunitid'] = insert_collunit(cur = cur,
+uploader['collunitid'] = nu.insert_collunit(cur = cur,
                                            yml_dict = yml_dict,
                                            csv_template = csv_template,
                                            uploader = uploader)
