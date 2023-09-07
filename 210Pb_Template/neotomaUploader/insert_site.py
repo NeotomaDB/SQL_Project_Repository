@@ -1,6 +1,6 @@
 import logging
-from .yaml_values import yaml_values
 from .pull_params import pull_params
+from .retrieve_dict import retrieve_dict
 
 def insert_site(cur, yml_dict, csv_template):
     """_Insert a site to Neotoma_
@@ -18,9 +18,9 @@ def insert_site(cur, yml_dict, csv_template):
     """
     site_query = """
         SELECT ts.insertsite(_sitename := %(sitename)s, 
-                             _altitude := %(altitude)d,
-                             _area := %(altitude)d,
-                             _description := %(description)s,
+                             _altitude := %(altitude)s,
+                             _area := %(area)s,
+                             _descript := %(description)s,
                              _notes := %(notes)s,
                              _east := %(ew)s,
                              _north := %(ns)s,
@@ -36,7 +36,29 @@ def insert_site(cur, yml_dict, csv_template):
         logging.error("The template must contain a sitename and coordinates.", exc_info=True)
     params = ["sitename", "altitude", "area", "sitedescription", "notes", "geog"]
     inputs = pull_params(params, yml_dict, csv_template, 'ndb.sites')
+    inputs = dict(map(lambda item: (item[0], None if all([i is None for i in item[1]]) else item[1]),
+                      inputs.items()))
+    
+    if len(inputs['sitename']) == 1 and isinstance(inputs['sitename'], list):
+        inputs['sitename'] = inputs['sitename'][0]
+    if inputs['altitude'] is not None:
+        inputs['altitude'] = inputs['altitude'][0]
+    if inputs['area'] is not None:
+        inputs['area'] = inputs['area'][0]
+    if inputs['sitedescription'] is not None:
+        inputs['description'] = inputs['sitedescription'][0]
+    else:
+        inputs['description'] = None
+    if inputs['notes'] is not None:
+        inputs['notes'] = inputs['notes'][0]
+    if len(inputs['geog']) == 1 and isinstance(inputs['geog'], list):
+        geog = retrieve_dict(yml_dict, 'ndb.sites.geog')[0]
+        inputs['geog'] = inputs['geog'][0]
+        if geog['type'] == 'coordinates (latlong)':
+            inputs['ew'] = inputs['geog'][0]
+            inputs['ns'] = inputs['geog'][1]
+
     cur.execute(site_query,
-                {'sitename': sitename_dict[0].get('values')[0], 'ew': coords[1], 'ns': coords[0]})
+                inputs)
     siteid = cur.fetchone()[0]
     return siteid

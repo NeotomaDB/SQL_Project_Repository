@@ -2,6 +2,7 @@ import datetime
 import logging
 from .retrieve_dict import retrieve_dict
 from .clean_column import clean_column
+from .pull_params import pull_params
 
 def insert_collunit(cur, yml_dict, csv_template, uploader):
     """_Insert a new collection unit to a site_
@@ -17,16 +18,19 @@ def insert_collunit(cur, yml_dict, csv_template, uploader):
     Returns:
         _int_: _The integer value of the newly created siteid from the Neotoma Database._
     """
+    try:
+        # Here we're just checking to make sure that we do have a site coordinate
+        # and geometry.
+        assert all(element in [d.get('neotoma') for d in yml_dict.get('metadata')]
+                   for element in ['ndb.collectionunits.handle'])
+    except AssertionError:
+        logging.error("The template must contain a collectionunit handle.", exc_info = True)
     params = ["handle", "colltypeid", "depenvtid", "collunitname", "colldate", "colldevice",
-              "gpslatitude", "gpslongitude", "gpsaltitude", "gpserror", 
-			  "waterdepth", "substrateid", "slopeaspect", "slopeangle", "location", "notes"]
+                "gpslatitude", "gpslongitude", "gpsaltitude", "gpserror", 
+                "waterdepth", "substrateid", "slopeaspect", "slopeangle", "location", "notes"]
     add_unit_inputs = {}
-    for i in params:
-        value = retrieve_dict(yml_dict, 'ndb.collectionunits.' + i)
-        clean_value = [clean_column(value[j].get('column'), csv_template, clean = not value[j].get('repeat')) for j in range(len(value))][0]
-        add_unit_inputs[i] = clean_value
-    newdate = datetime.datetime.strptime(colldate[0], '%Y-%m-%d').date()
-    handle = collunits[0].upper().replace(' ', '')[0:9]
+    inputs = pull_params(params, yml_dict, csv_template, 'ndb.collectionunits')
+    print(inputs)
     try:
         coords = list(map(float, coords[0].split(',')))
         assert len(coords) == 2

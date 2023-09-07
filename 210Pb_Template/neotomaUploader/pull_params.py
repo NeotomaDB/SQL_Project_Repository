@@ -1,5 +1,6 @@
 import datetime
 import re
+from itertools import chain
 from .retrieve_dict import retrieve_dict
 from .clean_column import clean_column
 
@@ -22,15 +23,15 @@ def pull_params(params, yml_dict, csv_template, table):
         value = retrieve_dict(yml_dict, table + i)
         if len(value) > 0:
             for count, val in enumerate(value):
-                clean_value = [clean_column(value[count].get('column'),
+                clean_value = [clean_column(val.get('column'),
                                         csv_template,
-                                        clean = not value[count].get('repeat'))]
+                                        clean = not val.get('repeat'))]
                 if len(clean_value) > 0:
                     match value[count].get('type'):
                         case "string":
-                            clean_value = list(map(str, clean_value[0]))
+                            clean_value = list(map(str, chain(*clean_value)))
                         case "date":
-                            clean_value = list(lambda x: map(datetime.datetime.strptime(x, '%Y-%m-%d').date(), clean_value[0]))
+                            clean_value = list(map(lambda x: datetime.datetime.strptime(x, '%Y-%m-%d').date(), chain(*clean_value)))
                         case "int":
                             clean_value = list(map(int, clean_value[0]))
                         case "float":
