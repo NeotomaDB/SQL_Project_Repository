@@ -1,5 +1,7 @@
 from .retrieve_dict import retrieve_dict
 from .clean_column import clean_column
+import logging
+from .pull_params import pull_params
 
 def insert_analysisunit(cur, yml_dict, csv_template, uploader):
     """_Inserting analysis units_
@@ -18,7 +20,6 @@ def insert_analysisunit(cur, yml_dict, csv_template, uploader):
 
     add_unit = """
     SELECT ts.insertanalysisunit(_collectionunitid := %(collunitid)s,
-                                 _mixed := FALSE,
                                  _depth := %(depth)s,
                                  _thickness := %(thickness)s,
                                   _faciesid := %(faciesid)s,
@@ -26,22 +27,19 @@ def insert_analysisunit(cur, yml_dict, csv_template, uploader):
                                   _igsn := %(igsn)s,
                                   _notes := %(notes)s)
     """
-
-    add_unit_inputs = {}
+    
     params = ["analysisunitname", "depth", "thickness", "faciesid", "mixed", "igsn", "notes"]
-    for i in params:
-        value = retrieve_dict(yml_dict, 'ndb.analysisunits.' + i)
-        clean_value = [clean_column(value[j].get('column'), csv_template, clean = not value[j].get('repeat')) for j in range(len(value))]
-        add_unit_inputs[i] = clean_value
+    inputs = pull_params(params, yml_dict, csv_template, 'ndb.analysisunits')
 
     anunits = []
-    for i, value in enumerate(add_unit_inputs['depth'][0]):
+    for i, value in enumerate(inputs['depth']):
+
         cur.execute(add_unit, {'collunitid': uploader['collunitid'],
-                               'depth': add_unit_inputs['depth'][0][i],
-                               'thickness': add_unit_inputs['thickness'][0][i],
-                               'faciesid': add_unit_inputs['thickness'][0][i],
-                               'mixed': add_unit_inputs['mixed'][0][i],
-                               'igsn': add_unit_inputs['igsn'][0][i],
-                               'notes': add_unit_inputs['notes'][0][i]})
-        anunits.append(cur.fetchone()[0])
+                                'depth': inputs['depth'][i],
+                                'thickness': inputs['thickness'][i],
+                                'faciesid': 5, #inputs['faciesid'][i],
+                                'mixed': "N", #inputs['mixed'][i],
+                                'igsn': "N", #inputs['igsn'][i],
+                                'notes': "N" })#inputs['notes'][i]})
+        anunits.append(cur.fetchone())
     return anunits

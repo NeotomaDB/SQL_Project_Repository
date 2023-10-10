@@ -41,6 +41,13 @@ metadata:
     rowwise: false
     type: coordinates (latlong)
     vocab: null
+  - column: Geographic.coordinates
+    neotoma: ndb.collectionunits.geog
+    notes: Spatial (lat/long pair or geoJSON)
+    required: true
+    rowwise: false
+    type: coordinates (latlong)
+    vocab: null
   - column: Coordinate.precision
     neotoma: ndb.collectionunits.location
     notes: null

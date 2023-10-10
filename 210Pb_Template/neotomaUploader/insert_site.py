@@ -1,6 +1,6 @@
 import logging
-from .yaml_values import yaml_values
 from .pull_params import pull_params
+from .retrieve_dict import retrieve_dict
 
 def insert_site(cur, yml_dict, csv_template):
     """_Insert a site to Neotoma_
@@ -18,9 +18,9 @@ def insert_site(cur, yml_dict, csv_template):
     """
     site_query = """
         SELECT ts.insertsite(_sitename := %(sitename)s, 
-                             _altitude := %(altitude)d,
-                             _area := %(altitude)d,
-                             _description := %(description)s,
+                             _altitude := %(altitude)s,
+                             _area := %(area)s,
+                             _descript := %(description)s,
                              _notes := %(notes)s,
                              _east := %(ew)s,
                              _north := %(ns)s,
@@ -34,9 +34,39 @@ def insert_site(cur, yml_dict, csv_template):
                    for element in ['ndb.sites.sitename', 'ndb.sites.geog'])
     except AssertionError:
         logging.error("The template must contain a sitename and coordinates.", exc_info=True)
+    
     params = ["sitename", "altitude", "area", "sitedescription", "notes", "geog"]
     inputs = pull_params(params, yml_dict, csv_template, 'ndb.sites')
+    inputs = dict(map(lambda item: (item[0], None if all([i is None for i in item[1]]) else item[1]),
+                      inputs.items()))
+
+    if isinstance(inputs['sitename'], list): 
+        if len(list(set(inputs['sitename']))) > 1:
+            logging.error("There should only be one site name.")
+        inputs['sitename'] = inputs['sitename'][0]
+    if inputs['altitude'] is not None:
+        inputs['altitude'] = inputs['altitude'][0]
+    if inputs['area'] is not None:
+        inputs['area'] = inputs['area'][0]
+    if inputs['sitedescription'] is not None:
+        inputs['description'] = inputs['sitedescription'][0]
+    else:
+        inputs['description'] = None
+    if inputs['notes'] is not None:
+        inputs['notes'] = inputs['notes'][0]
+
+    try:
+        coords = inputs['geog']
+        assert len(coords) == 2
+        assert coords[0] >= -90 and coords[0] <= 90
+        assert coords[1] >= -180 and coords[1] <= 180
+    except AssertionError:
+        logging.error("Coordinates are improperly formatted. They must be in the form 'LAT, LONG' [-90 -> 90] and [-180 -> 180].")
+    inputs['ew'] = coords[0]
+    inputs['ns'] = coords[1]
+
     cur.execute(site_query,
-                {'sitename': sitename_dict[0].get('values')[0], 'ew': coords[1], 'ns': coords[0]})
+                inputs)
+    
     siteid = cur.fetchone()[0]
     return siteid
