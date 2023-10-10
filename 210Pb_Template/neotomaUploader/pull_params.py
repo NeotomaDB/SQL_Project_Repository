@@ -19,25 +19,27 @@ def pull_params(params, yml_dict, csv_template, table):
     add_unit_inputs = {}
     if re.match('.*\.$', table) == None:
         table = table + '.'
+    
     for i in params:
         value = retrieve_dict(yml_dict, table + i)
         if len(value) > 0:
             for count, val in enumerate(value):
-                clean_value = [clean_column(val.get('column'),
+                clean_value = clean_column(val.get('column'),
                                         csv_template,
-                                        clean = not val.get('repeat'))]
+                                        clean = not val.get('rowwise'))
                 if len(clean_value) > 0:
-                    match value[count].get('type'):
+                    match val.get('type'):
                         case "string":
-                            clean_value = list(map(str, chain(*clean_value)))
+                            clean_value = list(map(str, clean_value))
                         case "date":
-                            clean_value = list(map(lambda x: datetime.datetime.strptime(x, '%Y-%m-%d').date(), chain(*clean_value)))
+                            #clean_value = list(map(lambda x: datetime.datetime.strptime(x, '%Y-%m-%d').date(), chain(*clean_value)))
+                            clean_value = list(map(lambda x: datetime.datetime.strptime(x, '%Y-%m-%d').date(), clean_value))
                         case "int":
                             clean_value = list(map(int, clean_value[0]))
                         case "float":
                             clean_value = list(map(float, clean_value[0]))
                         case "coordinates (latlong)":
-                            clean_value = [[float(i) for i in clean_value[0][0].split(',')]]
+                            clean_value = [float(num) for num in clean_value[0].split(',')]
             add_unit_inputs[i] = clean_value
         else:
             add_unit_inputs[i] = []

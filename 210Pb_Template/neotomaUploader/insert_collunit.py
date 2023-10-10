@@ -1,7 +1,4 @@
-import datetime
 import logging
-from .retrieve_dict import retrieve_dict
-from .clean_column import clean_column
 from .pull_params import pull_params
 
 def insert_collunit(cur, yml_dict, csv_template, uploader):
@@ -27,30 +24,35 @@ def insert_collunit(cur, yml_dict, csv_template, uploader):
         logging.error("The template must contain a collectionunit handle.", exc_info = True)
     params = ["handle", "colltypeid", "depenvtid", "collunitname", "colldate", "colldevice",
                 "gpslatitude", "gpslongitude", "gpsaltitude", "gpserror", 
-                "waterdepth", "substrateid", "slopeaspect", "slopeangle", "location", "notes"]
-    add_unit_inputs = {}
+                "waterdepth", "substrateid", "slopeaspect", "slopeangle", "location", "notes", "geog"]
     inputs = pull_params(params, yml_dict, csv_template, 'ndb.collectionunits')
-    print(inputs)
     try:
-        coords = list(map(float, coords[0].split(',')))
+        coords = inputs['geog']
         assert len(coords) == 2
         assert coords[0] >= -90 and coords[0] <= 90
         assert coords[1] >= -180 and coords[1] <= 180
     except AssertionError:
         logging.error("Coordinates are improperly formatted. They must be in the form 'LAT, LONG' [-90 -> 90] and [-180 -> 180].")
+    collname =  inputs['handle'][0]
     cur.execute("""
         SELECT ts.insertcollectionunit(
             _handle := %(handle)s,
             _collunitname := %(collname)s,
             _siteid := %(siteid)s, 
-            _colltypeid := 3,
-            _depenvtid := 19,
+            _colltypeid := %(colltypeid)s,
+            _depenvtid := %(depenvtid)s,
             _colldate := %(newdate)s,
             _location := %(location)s,
-            _gpslatitude := %(ns)s, _gpslongitude := %(ew)s)""",
-          {'collname': collunits[0], 'newdate': newdate,
-           'siteid' : uploader.get('siteid'),
-           'handle': handle, 'location': location[0],
-           'ns': coords[0], 'ew': coords[1]})
+            _gpslatitude := %(ns)s, 
+            _gpslongitude := %(ew)s)""",
+          {'handle': collname[:10], # Must be smaller than 10 chars
+           'collname': collname,
+           'siteid' : 4,#uploader.get('siteid'), Change
+           'colltypeid': 3,
+           'depenvtid': 19,
+           'newdate': inputs['colldate'][0],
+           'location': inputs['location'][0],
+           'ns': coords[0], 
+           'ew': coords[1]})
     collunitid = cur.fetchone()[0]
     return collunitid

@@ -26,3 +26,4 @@ from .csv_validator import csv_validator
 from .csv_validator import yml_to_dict
 from .vocabDict import vocabDict
 from .parse_arguments import parse_arguments
+from .csv_to_yaml import csv_to_yaml

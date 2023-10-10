@@ -18,7 +18,9 @@ args = nu.parse_arguments()
 
 load_dotenv()
 
-data = json.loads(os.getenv('PGDB_HOLDING'))
+#data = json.loads(os.getenv('PGDB_HOLDING'))
+data = json.loads(os.getenv('PGDB_LOCAL'))
+
 
 conn = psycopg2.connect(**data, connect_timeout = 5)
 cur = conn.cursor()

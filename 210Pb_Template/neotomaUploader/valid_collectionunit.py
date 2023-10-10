@@ -16,7 +16,7 @@ def valid_collectionunit(cur, yml_dict, csv_template):
     response = {'pass': False,
             'message': []}
 
-    coords = yaml_values(yml_dict, csv_template, 'ndb.sites.geom')
+    coords = yaml_values(yml_dict, csv_template, 'ndb.collectionunits.geog')
     try:
         assert len(coords) == 1
     except AssertionError:

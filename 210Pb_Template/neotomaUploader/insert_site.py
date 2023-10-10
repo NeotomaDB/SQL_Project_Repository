@@ -34,12 +34,15 @@ def insert_site(cur, yml_dict, csv_template):
                    for element in ['ndb.sites.sitename', 'ndb.sites.geog'])
     except AssertionError:
         logging.error("The template must contain a sitename and coordinates.", exc_info=True)
+    
     params = ["sitename", "altitude", "area", "sitedescription", "notes", "geog"]
     inputs = pull_params(params, yml_dict, csv_template, 'ndb.sites')
     inputs = dict(map(lambda item: (item[0], None if all([i is None for i in item[1]]) else item[1]),
                       inputs.items()))
-    
-    if len(inputs['sitename']) == 1 and isinstance(inputs['sitename'], list):
+
+    if isinstance(inputs['sitename'], list): 
+        if len(list(set(inputs['sitename']))) > 1:
+            logging.error("There should only be one site name.")
         inputs['sitename'] = inputs['sitename'][0]
     if inputs['altitude'] is not None:
         inputs['altitude'] = inputs['altitude'][0]
@@ -51,14 +54,19 @@ def insert_site(cur, yml_dict, csv_template):
         inputs['description'] = None
     if inputs['notes'] is not None:
         inputs['notes'] = inputs['notes'][0]
-    if len(inputs['geog']) == 1 and isinstance(inputs['geog'], list):
-        geog = retrieve_dict(yml_dict, 'ndb.sites.geog')[0]
-        inputs['geog'] = inputs['geog'][0]
-        if geog['type'] == 'coordinates (latlong)':
-            inputs['ew'] = inputs['geog'][0]
-            inputs['ns'] = inputs['geog'][1]
+
+    try:
+        coords = inputs['geog']
+        assert len(coords) == 2
+        assert coords[0] >= -90 and coords[0] <= 90
+        assert coords[1] >= -180 and coords[1] <= 180
+    except AssertionError:
+        logging.error("Coordinates are improperly formatted. They must be in the form 'LAT, LONG' [-90 -> 90] and [-180 -> 180].")
+    inputs['ew'] = coords[0]
+    inputs['ns'] = coords[1]
 
     cur.execute(site_query,
                 inputs)
+    
     siteid = cur.fetchone()[0]
     return siteid

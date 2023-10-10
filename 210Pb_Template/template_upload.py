@@ -64,6 +64,8 @@ uploader['anunits'] = nu.insert_analysisunit(cur = cur,
                                             csv_template = csv_template,
                                             uploader = uploader)
 
+print(logfile)
+
 # logfile.append('=== Inserting Chronology ===')
 # uploader['chronology'] = nu.insertChronology(cur = cur,
 #                                             yml_dict = yml_dict,
