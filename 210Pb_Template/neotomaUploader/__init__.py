@@ -20,7 +20,7 @@ from .validGeoPol import validGeoPol
 from .valid_horizon import valid_horizon
 from .hash_file import hash_file
 from .check_file import check_file
-from .insertGeoPol import insertGeoPol
+from .insert_geopol import insert_geopol
 from .insert_collunit import insert_collunit
 from .csv_validator import csv_validator
 from .csv_validator import yml_to_dict
@@ -28,3 +28,4 @@ from .vocabDict import vocabDict
 from .parse_arguments import parse_arguments
 from .csv_to_yaml import csv_to_yaml
 from .valid_taxa import valid_taxa
+from .insert_chronology import insert_chronology
