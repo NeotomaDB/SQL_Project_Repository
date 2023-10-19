@@ -36,3 +36,6 @@ ORCID/.httr-oauth
 .env
 Bulk Uploader Notes.gdoc alias
 .gitignore
+
+.vscode/
+210Pb_Template/output.yml

@@ -6,7 +6,7 @@ import neotomaUploader as nu
 
 load_dotenv()
 
-data = json.loads(os.getenv('PGDB_HOLDING'))
+data = json.loads(os.getenv('PGDB_LOCAL'))
 
 conn = psycopg2.connect(**data, connect_timeout = 5)
 
@@ -43,24 +43,20 @@ logfile.append('=== Inserting new Site ===')
 uploader['siteid'] = nu.insert_site(cur = cur,
                                    yml_dict = yml_dict,
                                    csv_template = csv_template)
-
 logfile.append(f"siteid: {uploader['siteid']}")
 
-# This works with PGDB_Holding - tunnel does not have permission to run it
-logfile.append('=== Inserting Site Geopol ===')
-uploader['geopolid'] = nu.insert_geopol(cur = cur,
-                                       yml_dict = yml_dict,
-                                       csv_template = csv_template,
-                                       uploader = uploader)
-
-logfile.append(f"Geopolitical Unit: {uploader['geopolid']}")
+# logfile.append('=== Inserting Site Geopol ===')
+# uploader['geopolid'] = nu.insert_geopol(cur = cur,
+#                                        yml_dict = yml_dict,
+#                                        csv_template = csv_template,
+#                                        uploader = uploader)
+# logfile.append(f"Geopolitical Unit: {uploader['geopolid']}")
 
 logfile.append('=== Inserting Collection Units ===')
 uploader['collunitid'] = nu.insert_collunit(cur = cur,
                                            yml_dict = yml_dict,
                                            csv_template = csv_template,
                                            uploader = uploader)
-
 logfile.append(f"collunitid: {uploader['collunitid']}")
 
 logfile.append('=== Inserting Analysis Units ===')
@@ -68,14 +64,15 @@ uploader['anunits'] = nu.insert_analysisunit(cur = cur,
                                             yml_dict = yml_dict,
                                             csv_template = csv_template,
                                             uploader = uploader)
-
 logfile.append(f"anunits: {uploader['anunits']}")
 
 logfile.append('=== Inserting Chronology ===')
-# uploader['chronology'] = nu.insertChronology(cur = cur,
-#                                             yml_dict = yml_dict,
-#                                             csv_template = csv_template,
-#                                             uploader = uploader)
+uploader['chronology'] = nu.insert_chronology(cur = cur,
+                                            yml_dict = yml_dict,
+                                            csv_template = csv_template,
+                                            uploader = uploader)
+logfile.append(f"chronology: {uploader['chronology']}")
+
 
 #                                             #(cur = cur, 
 #                                         collunitid = uploader['collunitid'],

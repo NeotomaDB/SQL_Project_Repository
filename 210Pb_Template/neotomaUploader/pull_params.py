@@ -41,6 +41,12 @@ def pull_params(params, yml_dict, csv_template, table):
                         case "coordinates (latlong)":
                             clean_value = [float(num) for num in clean_value[0].split(',')]
             add_unit_inputs[i] = clean_value
+            if 'unitcolumn' in val:
+                clean_value2 = clean_column(val.get('unitcolumn'),
+                                            csv_template,
+                                            clean = not val.get('rowwise'))
+                name = val['unitcolumn']
+                add_unit_inputs['unitcolumn'] = clean_value2
         else:
             add_unit_inputs[i] = []
     maxlen = 0

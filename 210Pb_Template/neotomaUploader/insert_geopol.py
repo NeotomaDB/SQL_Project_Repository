@@ -17,7 +17,7 @@ def insert_geopol(cur, yml_dict, csv_template, uploader):
         # First test if the site exists.
         isAdded = """SELECT * FROM ap.sitegadm WHERE siteid =  %(siteid)s"""
         cur.execute(isAdded, { 'siteid': uploader['siteid'] })
-        result = cur.fetchone()[0]
+        result = cur.fetchone()
         if result is None:
             # Inserts site and fid in ap.sitegadm if it didn't exist
             #INSERT INTO ap.sitegadm(siteid, fid)
@@ -30,7 +30,7 @@ def insert_geopol(cur, yml_dict, csv_template, uploader):
                 RETURNING fid;
                 """        
             cur.execute(assignGeoPol, {'siteid': uploader['siteid']})
-            result = cur.fetchone()[0]
+            result = cur.fetchone()
     else:
         result = None
     return result

@@ -1,6 +1,5 @@
 import logging
 from .pull_params import pull_params
-from .retrieve_dict import retrieve_dict
 
 def insert_site(cur, yml_dict, csv_template):
     """_Insert a site to Neotoma_

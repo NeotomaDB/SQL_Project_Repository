@@ -463,7 +463,7 @@ metadata:
     type: string
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
   - column: X210Pb.Date
-    neotoma: ndb.values
+    neotoma: ndb.sampleages.age
     notes: null
     required: false
     rowwise: true
