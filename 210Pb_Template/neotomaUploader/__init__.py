@@ -29,3 +29,4 @@ from .parse_arguments import parse_arguments
 from .csv_to_yaml import csv_to_yaml
 from .valid_taxa import valid_taxa
 from .insert_chronology import insert_chronology
+from .insert_chron_control import insert_chron_control

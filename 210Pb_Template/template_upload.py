@@ -73,18 +73,17 @@ uploader['chronology'] = nu.insert_chronology(cur = cur,
                                             uploader = uploader)
 logfile.append(f"chronology: {uploader['chronology']}")
 
+logfile.append('=== Inserting Chroncontrol ===')
+uploader['chroncontrol'] = nu.insert_chron_control(cur = cur,
+                                                 yml_dict = yml_dict,
+                                                 csv_template = csv_template,
+                                                 uploader = uploader)
+logfile.append(f"chroncontrol: {uploader['chroncontrol']}")
 
-#                                             #(cur = cur, 
-#                                         collunitid = uploader['collunitid'],
-#                                         agetype = agetype[1], 
-#                                         agemodel = agemodel[0],
-#                                         ages = ages,
-#                                         contactname = modelername,
-#                                         default = True,
-#                                         chronologyname = 'Default 210Pb')
 
-# logfile.append('=== Inserting Chroncontrol ===')
-# uploader['chroncontrol'] = nu.insertChroncontrol(cur = cur,
+
+
+# cur = cur,
 #                                         collunitid = uploader['collunitid'],
 #                                         agetype = agetype[1],
 #                                         agemodel = agemodel[0],

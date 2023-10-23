@@ -41,5 +41,5 @@ def insert_analysisunit(cur, yml_dict, csv_template, uploader):
                                 'mixed': "N", #inputs['mixed'][i],
                                 'igsn': "N", #inputs['igsn'][i],
                                 'notes': "N" })#inputs['notes'][i]})
-        anunits.append(cur.fetchone())
+        anunits.append(cur.fetchone()[0])
     return anunits

@@ -45,8 +45,14 @@ def pull_params(params, yml_dict, csv_template, table):
                 clean_value2 = clean_column(val.get('unitcolumn'),
                                             csv_template,
                                             clean = not val.get('rowwise'))
-                name = val['unitcolumn']
                 add_unit_inputs['unitcolumn'] = clean_value2
+                if 'uncertainty' in val.keys():
+                    print(val['uncertainty']['uncertaintycolumn'])
+                    clean_value3 = clean_column(val['uncertainty']['uncertaintycolumn'],
+                                                csv_template,
+                                                clean = not val.get('rowwise'))
+                    add_unit_inputs['uncertainty'] = clean_value3
+       #         if 'uncertainty' in val.keys(): # Work on this to have it running and pulling uncertainties for chroncontrols
         else:
             add_unit_inputs[i] = []
     maxlen = 0
