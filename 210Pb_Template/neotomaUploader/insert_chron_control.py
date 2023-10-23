@@ -48,4 +48,3 @@ def insert_chron_control(cur, yml_dict, csv_template, uploader):
                                  'ageold': inputs_age['age'][i] -  inputs_age['uncertainty'][i]})
         chron_control_units.append(cur.fetchone()[0])
     return chron_control_units
-

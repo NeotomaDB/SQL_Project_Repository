@@ -30,3 +30,5 @@ from .csv_to_yaml import csv_to_yaml
 from .valid_taxa import valid_taxa
 from .insert_chronology import insert_chronology
 from .insert_chron_control import insert_chron_control
+from .insert_dataset import insert_dataset
+from .insert_dataset_pi import insert_dataset_pi

@@ -80,21 +80,19 @@ uploader['chroncontrol'] = nu.insert_chron_control(cur = cur,
                                                  uploader = uploader)
 logfile.append(f"chroncontrol: {uploader['chroncontrol']}")
 
+logfile.append('=== Inserting Dataset ===')
+uploader['datasetid'] = nu.insert_dataset(cur = cur,
+                                          yml_dict = yml_dict,
+                                          csv_template = csv_template,
+                                          uploader = uploader)
+logfile.append(f"datasetid: {uploader['datasetid']}")
 
-
-
-# cur = cur,
-#                                         collunitid = uploader['collunitid'],
-#                                         agetype = agetype[1],
-#                                         agemodel = agemodel[0],
-#                                         ages = ages,
-#                                         contactname = modelername,
-#                                         default = True,
-#                                         chronologyname = 'Default 210Pb')
-
-# uploader['datasetid'] = nu.insertDataset(cur, uploader['collunitid'], datasetname)
-
-# uploader['datasetpi'] = nu.insertDatasetPI(cur, uploader['datasetid'], piname[i], i + 1)
+logfile.append('=== Inserting Dataset PI ===')
+uploader['datasetpi'] = nu.insert_dataset_pi(cur = cur,
+                                           yml_dict = yml_dict,
+                                           csv_template = csv_template,
+                                           uploader = uploader)
+logfile.append(f"datasetPI: {uploader['datasetpi']}")
 
 # uploader['processor'] = nu.insertDatasetProcessor(cur, uploader['datasetid'])
 

@@ -47,7 +47,6 @@ def pull_params(params, yml_dict, csv_template, table):
                                             clean = not val.get('rowwise'))
                 add_unit_inputs['unitcolumn'] = clean_value2
                 if 'uncertainty' in val.keys():
-                    print(val['uncertainty']['uncertaintycolumn'])
                     clean_value3 = clean_column(val['uncertainty']['uncertaintycolumn'],
                                                 csv_template,
                                                 clean = not val.get('rowwise'))
