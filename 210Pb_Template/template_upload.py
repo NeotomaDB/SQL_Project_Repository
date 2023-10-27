@@ -45,12 +45,12 @@ uploader['siteid'] = nu.insert_site(cur = cur,
                                    csv_template = csv_template)
 logfile.append(f"siteid: {uploader['siteid']}")
 
-# logfile.append('=== Inserting Site Geopol ===')
-# uploader['geopolid'] = nu.insert_geopol(cur = cur,
-#                                        yml_dict = yml_dict,
-#                                        csv_template = csv_template,
-#                                        uploader = uploader)
-# logfile.append(f"Geopolitical Unit: {uploader['geopolid']}")
+logfile.append('=== Inserting Site Geopol ===')
+uploader['geopolid'] = nu.insert_geopol(cur = cur,
+                                       yml_dict = yml_dict,
+                                       csv_template = csv_template,
+                                       uploader = uploader)
+logfile.append(f"Geopolitical Unit: {uploader['geopolid']}")
 
 logfile.append('=== Inserting Collection Units ===')
 uploader['collunitid'] = nu.insert_collunit(cur = cur,
@@ -101,13 +101,19 @@ uploader['processor'] = nu.insert_data_processor(cur = cur,
                                                  uploader = uploader)
 logfile.append(f"dataset Processor: {uploader['processor']}")
 
+# logfile.append('=== Inserting Repository ===')
+# uploader['repository'] = nu.insert_dataset_repository(cur = cur,
+#                                                     yml_dict = yml_dict,
+#                                                     csv_template = csv_template,
+#                                                     uploader = uploader)
+# logfile.append(f"dataset Processor: {uploader['repository']}")
+
 logfile.append('=== Inserting Dataset Database ===')
 uploader['database'] = nu.insert_dataset_database(cur = cur,
                                                  yml_dict = yml_dict,
                                                  uploader = uploader)
 logfile.append(f"Dataset Database: {uploader['database']}")
 
-## Todo verify this one works and get teh right samples
 logfile.append('=== Inserting Samples ===')
 uploader['samples'] = nu.insert_sample(cur, 
                                        yml_dict = yml_dict,
@@ -122,8 +128,6 @@ uploader['sampleAnalyst'] = nu.insert_sample_analyst(cur,
                                        uploader = uploader)
 logfile.append(f"Sample Analyst: {uploader['sampleAnalyst']}")
 
-
-# ts.insertsampleage
 logfile.append('=== Inserting Sample Age ===')
 uploader['sampleAge'] = nu.insert_sample_age(cur, 
                                        yml_dict = yml_dict,
@@ -131,24 +135,12 @@ uploader['sampleAge'] = nu.insert_sample_age(cur,
                                        uploader = uploader)
 logfile.append(f"Sample Age: {uploader['sampleAge']}")
 
-# ts.insertdata
 logfile.append('=== Inserting Data ===')
 uploader['data'] = nu.insert_data(cur, 
                                   yml_dict = yml_dict,
                                   csv_template = csv_template,
                                   uploader = uploader)
 logfile.append(f"Data: {uploader['data']}")
-
-
-# TODO before insertdatasetdatabase
-# logfile.append('=== Inserting Repository ===')
-# uploader['repository'] = nu.insert_dataset_repository(cur = cur,
-#                                                     yml_dict = yml_dict,
-#                                                     csv_template = csv_template,
-#                                                     uploader = uploader)
-# logfile.append(f"dataset Processor: {uploader['repository']}")
-
-
 
 # conn.commit()
 print(logfile)

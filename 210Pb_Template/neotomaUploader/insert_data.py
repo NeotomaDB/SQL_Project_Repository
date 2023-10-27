@@ -27,7 +27,5 @@ def insert_data(cur, yml_dict, csv_template, uploader):
             result = cur.fetchone()[0]
             counter +=1
             data_points.append(result)
-    print(counter)
-    print(len(uploader['samples']))
 
     return data_points

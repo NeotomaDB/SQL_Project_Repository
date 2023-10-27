@@ -1,5 +1,6 @@
 import logging
 from .pull_params import pull_params
+import numpy as np
 
 def insert_sample_age(cur, yml_dict, csv_template, uploader):
     """
@@ -13,10 +14,20 @@ def insert_sample_age(cur, yml_dict, csv_template, uploader):
                                                  _ageolder := %(ageolder)s)
                        """
     
-    params = []
-    inputs = pull_params(params, yml_dict, csv_template, 'ndb.ages')
-    
-    print(len(uploader['chronology']))
-    print(len(uploader['samples']))
+    params = ['age']
+    inputs = pull_params(params, yml_dict, csv_template, 'ndb.sampleages')
 
-    return
+    inputs['age'] = [float(value) if value != 'NA' else np.nan for value in inputs['age']]
+
+    print(inputs)
+    results = []
+    for i in range(len(uploader['samples'])):
+        cur.execute(sample_age_query, {'sampleid': uploader['samples'][i],
+                                       'chronologyid': uploader['chronologyid'],
+                                       'age': inputs['age'],
+                                       'ageyounger': inputs['ageyounger'],
+                                       'ageolder': inputs['ageolder']})
+        result = cur.fetchone()[0]
+        results.append(result)
+
+    return results
