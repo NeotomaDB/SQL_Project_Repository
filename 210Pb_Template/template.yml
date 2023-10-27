@@ -164,6 +164,7 @@ metadata:
     taxonid: 5782
     taxonname: bulk density
     type: number
+    unitcolumn: Dry.Density.Units
     vocab: null
   - column: Dry.Density.Units
     neotoma: ndb.variableunits.variableunits

@@ -109,11 +109,11 @@ logfile.append(f"Dataset Database: {uploader['database']}")
 
 ## Todo verify this one works and get teh right samples
 logfile.append('=== Inserting Samples ===')
-uploader['sample'] = nu.insert_sample(cur, 
+uploader['samples'] = nu.insert_sample(cur, 
                                        yml_dict = yml_dict,
                                        csv_template = csv_template,
                                        uploader = uploader)
-logfile.append(f"Dataset Samples: {uploader['sample']}")
+logfile.append(f"Dataset Samples: {uploader['samples']}")
 
 logfile.append('=== Inserting Sample Analyst ===')
 uploader['sampleAnalyst'] = nu.insert_sample_analyst(cur, 
