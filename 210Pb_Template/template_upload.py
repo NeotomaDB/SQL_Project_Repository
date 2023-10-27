@@ -45,12 +45,12 @@ uploader['siteid'] = nu.insert_site(cur = cur,
                                    csv_template = csv_template)
 logfile.append(f"siteid: {uploader['siteid']}")
 
-logfile.append('=== Inserting Site Geopol ===')
-uploader['geopolid'] = nu.insert_geopol(cur = cur,
-                                       yml_dict = yml_dict,
-                                       csv_template = csv_template,
-                                       uploader = uploader)
-logfile.append(f"Geopolitical Unit: {uploader['geopolid']}")
+# logfile.append('=== Inserting Site Geopol ===')
+# uploader['geopolid'] = nu.insert_geopol(cur = cur,
+#                                        yml_dict = yml_dict,
+#                                        csv_template = csv_template,
+#                                        uploader = uploader)
+# logfile.append(f"Geopolitical Unit: {uploader['geopolid']}")
 
 logfile.append('=== Inserting Collection Units ===')
 uploader['collunitid'] = nu.insert_collunit(cur = cur,
@@ -101,6 +101,7 @@ uploader['processor'] = nu.insert_data_processor(cur = cur,
                                                  uploader = uploader)
 logfile.append(f"dataset Processor: {uploader['processor']}")
 
+# Not sure where to get this information from
 # logfile.append('=== Inserting Repository ===')
 # uploader['repository'] = nu.insert_dataset_repository(cur = cur,
 #                                                     yml_dict = yml_dict,
