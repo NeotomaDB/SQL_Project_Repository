@@ -124,12 +124,12 @@ logfile.append(f"Sample Analyst: {uploader['sampleAnalyst']}")
 
 
 # ts.insertsampleage
-# logfile.append('=== Inserting Sample Analyst ===')
-# uploader['sampleAnalyst'] = nu.insert_sample_analyst(cur, 
-#                                        yml_dict = yml_dict,
-#                                        csv_template = csv_template,
-#                                        uploader = uploader)
-# logfile.append(f"Sample Analyst: {uploader['sampleAnalyst']}")
+logfile.append('=== Inserting Sample Age ===')
+uploader['sampleAge'] = nu.insert_sample_age(cur, 
+                                       yml_dict = yml_dict,
+                                       csv_template = csv_template,
+                                       uploader = uploader)
+logfile.append(f"Sample Age: {uploader['sampleAge']}")
 
 # ts.insertdata
 logfile.append('=== Inserting Data ===')
