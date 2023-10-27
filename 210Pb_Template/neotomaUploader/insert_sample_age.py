@@ -19,8 +19,6 @@ def insert_sample_age(cur, yml_dict, csv_template, uploader):
 
     inputs['age'] = [float(value) if value != 'NA' else np.nan for value in inputs['age']]
     inputs['uncertainty'] = [float(value) if value != 'NA' else np.nan for value in inputs['uncertainty']]
-
-    print(inputs)
     results = []
 
     for i, item in enumerate(uploader['samples']):
