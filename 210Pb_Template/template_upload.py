@@ -89,20 +89,66 @@ logfile.append(f"datasetid: {uploader['datasetid']}")
 
 logfile.append('=== Inserting Dataset PI ===')
 uploader['datasetpi'] = nu.insert_dataset_pi(cur = cur,
-                                           yml_dict = yml_dict,
-                                           csv_template = csv_template,
-                                           uploader = uploader)
+                                             yml_dict = yml_dict,
+                                             csv_template = csv_template,
+                                             uploader = uploader)
 logfile.append(f"datasetPI: {uploader['datasetpi']}")
 
-# uploader['processor'] = nu.insertDatasetProcessor(cur, uploader['datasetid'])
+logfile.append('=== Inserting Data Processor ===')
+uploader['processor'] = nu.insert_data_processor(cur = cur,
+                                                 yml_dict = yml_dict,
+                                                 csv_template = csv_template,
+                                                 uploader = uploader)
+logfile.append(f"dataset Processor: {uploader['processor']}")
 
-# uploader['repository'] = nu.insertDatasetRepository(cur, uploader['datasetid'])
+logfile.append('=== Inserting Dataset Database ===')
+uploader['database'] = nu.insert_dataset_database(cur = cur,
+                                                 yml_dict = yml_dict,
+                                                 uploader = uploader)
+logfile.append(f"Dataset Database: {uploader['database']}")
 
-# nu.insertDatasetDatabase(cur, uploader['datasetid'], "")
-# nu.insertSamples(cur, ts.insertsample
-# ts.insertsampleanalyst
+## Todo verify this one works and get teh right samples
+logfile.append('=== Inserting Samples ===')
+uploader['sample'] = nu.insert_sample(cur, 
+                                       yml_dict = yml_dict,
+                                       csv_template = csv_template,
+                                       uploader = uploader)
+logfile.append(f"Dataset Samples: {uploader['sample']}")
+
+logfile.append('=== Inserting Sample Analyst ===')
+uploader['sampleAnalyst'] = nu.insert_sample_analyst(cur, 
+                                       yml_dict = yml_dict,
+                                       csv_template = csv_template,
+                                       uploader = uploader)
+logfile.append(f"Sample Analyst: {uploader['sampleAnalyst']}")
+
+
 # ts.insertsampleage
+# logfile.append('=== Inserting Sample Analyst ===')
+# uploader['sampleAnalyst'] = nu.insert_sample_analyst(cur, 
+#                                        yml_dict = yml_dict,
+#                                        csv_template = csv_template,
+#                                        uploader = uploader)
+# logfile.append(f"Sample Analyst: {uploader['sampleAnalyst']}")
+
 # ts.insertdata
+logfile.append('=== Inserting Data ===')
+uploader['data'] = nu.insert_data(cur, 
+                                  yml_dict = yml_dict,
+                                  csv_template = csv_template,
+                                  uploader = uploader)
+logfile.append(f"Data: {uploader['data']}")
+
+
+# TODO before insertdatasetdatabase
+# logfile.append('=== Inserting Repository ===')
+# uploader['repository'] = nu.insert_dataset_repository(cur = cur,
+#                                                     yml_dict = yml_dict,
+#                                                     csv_template = csv_template,
+#                                                     uploader = uploader)
+# logfile.append(f"dataset Processor: {uploader['repository']}")
+
+
 
 # conn.commit()
 print(logfile)

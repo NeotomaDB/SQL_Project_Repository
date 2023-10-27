@@ -2,6 +2,8 @@
 apiVersion: neotoma v2.0
 headers: 2
 kind: Development
+databaseid: 2
+lab_number: 5
 metadata:
   - column: Site.name
     link: https://open.neotomadb.org/dbschema/tables/sites.html
@@ -155,7 +157,7 @@ metadata:
     type: string
     vocab: ['Top', 'Mid', 'Bottom']
   - column: Dry.Density
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     notes: null
     required: false
     rowwise: true
@@ -171,7 +173,7 @@ metadata:
     type: string
     vocab: ['g/cm3']
   - column: Cumulative.dry.mass
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     notes: null
     required: false
     rowwise: true
@@ -224,7 +226,7 @@ metadata:
     type: string
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
   - column: Total.210Pb.Gamma
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     notes: null
     required: false
     rowwise: true
@@ -261,7 +263,7 @@ metadata:
     type: string
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
   - column: X214Pb
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     notes: null
     required: false
     rowwise: true
@@ -298,7 +300,7 @@ metadata:
     type: string
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
   - column: X214Bi
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     notes: null
     required: false
     rowwise: true
@@ -335,7 +337,7 @@ metadata:
     type: string
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
   - column: X137Cs
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     notes: null
     required: false
     rowwise: true
@@ -372,7 +374,7 @@ metadata:
     type: string
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
   - column: Assigned.137Cs.Date
-    neotoma: ndb.values
+    neotoma: ndb.geochroncontrols.age
     notes: null
     required: false
     rowwise: true
@@ -389,7 +391,7 @@ metadata:
     type: string
     vocab: ['CE/BCE', 'cal yr BP', 'Cal yr BP']
   - column: Supported.210Pb
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     notes: null
     required: false
     rowwise: true
@@ -426,7 +428,7 @@ metadata:
     type: string
     vocab: ['pCi/g', 'Bq/g', 'Bq/kg', 'dpm/g']
   - column: Unsupported.210Pb
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     notes: null
     required: false
     rowwise: true
@@ -500,7 +502,7 @@ metadata:
     type: string
     vocab: ['CE/BCE', 'cal yr BP', 'Cal yr BP']
   - column: DMAR
-    neotoma: ndb.values
+    neotoma: ndb.data.value
     notes: null
     required: false
     rowwise: true

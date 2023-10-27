@@ -14,46 +14,55 @@ def pull_params(params, yml_dict, csv_template, table):
         table (_string_): _The name of the table the parameters are being drawn for._
 
     Returns:
-        _dict_: _cleaned and repeated values for input into a Tilia insert function._
+        _dict_: _cleaned and repeated valors for input into a Tilia insert function._
     """
     add_unit_inputs = {}
     if re.match('.*\.$', table) == None:
         table = table + '.'
-    
+    add_units_inputs_list=[]
     for i in params:
-        value = retrieve_dict(yml_dict, table + i)
-        if len(value) > 0:
-            for count, val in enumerate(value):
-                clean_value = clean_column(val.get('column'),
+        valor = retrieve_dict(yml_dict, table + i)
+        if len(valor) > 0:
+            for count, val in enumerate(valor):
+                new_dict = {}
+                clean_valor = clean_column(val.get('column'),
                                         csv_template,
                                         clean = not val.get('rowwise'))
-                if len(clean_value) > 0:
+                if len(clean_valor) > 0:
                     match val.get('type'):
                         case "string":
-                            clean_value = list(map(str, clean_value))
+                            clean_valor = list(map(str, clean_valor))
                         case "date":
-                            #clean_value = list(map(lambda x: datetime.datetime.strptime(x, '%Y-%m-%d').date(), chain(*clean_value)))
-                            clean_value = list(map(lambda x: datetime.datetime.strptime(x, '%Y-%m-%d').date(), clean_value))
+                            #clean_valor = list(map(lambda x: datetime.datetime.strptime(x, '%Y-%m-%d').date(), chain(*clean_valor)))
+                            clean_valor = list(map(lambda x: datetime.datetime.strptime(x, '%Y-%m-%d').date(), clean_valor))
                         case "int":
-                            clean_value = list(map(int, clean_value[0]))
+                            clean_valor = list(map(int, clean_valor[0]))
                         case "float":
-                            clean_value = list(map(float, clean_value[0]))
+                            clean_valor = list(map(float, clean_valor[0]))
                         case "coordinates (latlong)":
-                            clean_value = [float(num) for num in clean_value[0].split(',')]
-            add_unit_inputs[i] = clean_value
-            if 'unitcolumn' in val:
-                clean_value2 = clean_column(val.get('unitcolumn'),
+                            clean_valor = [float(num) for num in clean_valor[0].split(',')]
+                add_unit_inputs[i] = clean_valor
+                if 'unitcolumn' in val:
+                    clean_valor2 = clean_column(val.get('unitcolumn'),
                                             csv_template,
                                             clean = not val.get('rowwise'))
-                add_unit_inputs['unitcolumn'] = clean_value2
+                    add_unit_inputs['unitcolumn'] = clean_valor2
+            
                 if 'uncertainty' in val.keys():
-                    clean_value3 = clean_column(val['uncertainty']['uncertaintycolumn'],
+                    clean_valor3 = clean_column(val['uncertainty']['uncertaintycolumn'],
                                                 csv_template,
                                                 clean = not val.get('rowwise'))
-                    add_unit_inputs['uncertainty'] = clean_value3
-       #         if 'uncertainty' in val.keys(): # Work on this to have it running and pulling uncertainties for chroncontrols
+                    add_unit_inputs['uncertainty'] = clean_valor3
+                
+                samples_dict = add_unit_inputs.copy()
+                samples_dict['name'] = val.get('column')
+                samples_dict['taxonid'] = val.get('taxonid')
+                samples_dict['taxonname'] = val.get('taxonname')
+                add_units_inputs_list.append(samples_dict)
+
         else:
             add_unit_inputs[i] = []
+
     maxlen = 0
     for i in params:
         if len(add_unit_inputs.get(i)) > maxlen:
@@ -63,4 +72,8 @@ def pull_params(params, yml_dict, csv_template, table):
             add_unit_inputs[i] = [None for j in range(maxlen)]
         elif len(add_unit_inputs.get(i)) == 1:
             add_unit_inputs[i] = [add_unit_inputs[i][0] for j in range(maxlen)]
-    return add_unit_inputs
+
+    if params == ['value']:
+        return add_units_inputs_list
+    else:
+        return add_unit_inputs

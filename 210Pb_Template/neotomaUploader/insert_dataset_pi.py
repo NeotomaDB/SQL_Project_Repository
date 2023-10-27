@@ -17,7 +17,6 @@ def insert_dataset_pi(cur, yml_dict, csv_template, uploader):
     
     result = []
     for contact in contids:
-        print(contact)
         inserter = """SELECT ts.insertdatasetpi(_datasetid := %(datasetid)s, 
                                                 _contactid := %(contid)s,
                                                 _piorder := %(piorder)s);"""

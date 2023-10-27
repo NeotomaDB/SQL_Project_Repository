@@ -33,7 +33,6 @@ def insert_analysisunit(cur, yml_dict, csv_template, uploader):
 
     anunits = []
     for i, value in enumerate(inputs['depth']):
-
         cur.execute(add_unit, {'collunitid': uploader['collunitid'],
                                 'depth': inputs['depth'][i],
                                 'thickness': inputs['thickness'][i],
