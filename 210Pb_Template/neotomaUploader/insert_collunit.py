@@ -47,9 +47,9 @@ def insert_collunit(cur, yml_dict, csv_template, uploader):
             _gpslongitude := %(ew)s)""",
           {'handle': collname[:10], # Must be smaller than 10 chars
            'collname': collname,
-           'siteid' : 4,#uploader.get('siteid'), Change
-           'colltypeid': 3,
-           'depenvtid': 19,
+           'siteid' : uploader.get('siteid'), 
+           'colltypeid': 3, # to do: put it as input
+           'depenvtid': 19, # to do: put it as input
            'newdate': inputs['colldate'][0],
            'location': inputs['location'][0],
            'ns': coords[0], 

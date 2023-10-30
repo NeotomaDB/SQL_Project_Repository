@@ -31,7 +31,7 @@ def valid_taxa(cur, csv_template, yml_dict):
         cur.execute(nameQuery, {'taxonname': taxonname})
         result = {'name': taxonname, 'match':  cur.fetchall() or []}
         taxamatch.append(result)
-
+ 
         matches = []
         for taxon in taxamatch:
             if len(taxon['match']) ==0:

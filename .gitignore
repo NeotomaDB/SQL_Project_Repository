@@ -13,6 +13,7 @@ geospatial/gadm_410.gpkg
 210Pb_Template/data/
 data/
 data-toy/
+data-old/
 
 210Pb_Template/data-all/
 210Pb_Template/uncertaintyadditions.html
