@@ -1,7 +1,7 @@
 requiredFields:
     - fields:
       table: "ndb.sites"
-      columns: ["sitename", "east", "north", "west", "south"]
+      columns: ["sitename", "geog"]
     - fields:
       table: "ndb.geopoliticalunits"
       columns: ["geopoliticalid"]

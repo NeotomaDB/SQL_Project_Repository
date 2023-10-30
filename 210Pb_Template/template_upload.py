@@ -10,7 +10,6 @@ load_dotenv()
 data = json.loads(os.getenv('PGDB_LOCAL'))
 
 conn = psycopg2.connect(**data, connect_timeout = 5)
-
 cur = conn.cursor()
 
 args = nu.parse_arguments()
@@ -59,19 +58,11 @@ for filename in filenames:
                                                 uploader = uploader)
         logfile.append(f"collunitid: {uploader['collunitid']}")
 
-        logfile.append('=== Inserting Analysis Units ===')
-        uploader['anunits'] = nu.insert_analysisunit(cur = cur,
-                                                    yml_dict = yml_dict,
-                                                    csv_template = csv_template,
-                                                    uploader = uploader)
-        logfile.append(f"anunits: {uploader['anunits']}")
-
-        logfile.append('=== Inserting Chronology ===')
-        uploader['chronology'] = nu.insert_chronology(cur = cur,
-                                                    yml_dict = yml_dict,
-                                                    csv_template = csv_template,
-                                                    uploader = uploader)
-        logfile.append(f"chronology: {uploader['chronology']}")
+logfile.append('=== Inserting Collection Units ===')
+uploader['collunitid'] = nu.insert_collunit(cur = cur,
+                                           yml_dict = yml_dict,
+                                           csv_template = csv_template,
+                                           uploader = uploader)
 
         logfile.append('=== Inserting Chroncontrol ===')
         uploader['chroncontrol'] = nu.insert_chron_control(cur = cur,

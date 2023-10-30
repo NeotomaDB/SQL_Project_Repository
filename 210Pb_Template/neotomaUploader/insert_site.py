@@ -32,8 +32,7 @@ def insert_site(cur, yml_dict, csv_template):
         assert all(element in [d.get('neotoma') for d in yml_dict.get('metadata')]
                    for element in ['ndb.sites.sitename', 'ndb.sites.geog'])
     except AssertionError:
-        logging.error("The template must contain a sitename and coordinates.", exc_info=True)
-    
+        logging.error("The template must contain a sitename and coordinates.", exc_info = True)
     params = ["sitename", "altitude", "area", "sitedescription", "notes", "geog"]
     inputs = pull_params(params, yml_dict, csv_template, 'ndb.sites')
     inputs = dict(map(lambda item: (item[0], None if all([i is None for i in item[1]]) else item[1]),

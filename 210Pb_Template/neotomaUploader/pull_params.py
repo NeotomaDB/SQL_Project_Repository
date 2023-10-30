@@ -72,8 +72,4 @@ def pull_params(params, yml_dict, csv_template, table):
             add_unit_inputs[i] = [None for j in range(maxlen)]
         elif len(add_unit_inputs.get(i)) == 1:
             add_unit_inputs[i] = [add_unit_inputs[i][0] for j in range(maxlen)]
-
-    if params == ['value']:
-        return add_units_inputs_list
-    else:
-        return add_unit_inputs
+    return add_unit_inputs
