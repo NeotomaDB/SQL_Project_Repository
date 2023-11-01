@@ -16,6 +16,11 @@ cur = conn.cursor()
 args = nu.parse_arguments()
 
 filenames = glob.glob(args['data'] + "*.csv")
+upload_logs = 'upload_logs'
+if not os.path.exists(upload_logs):
+            os.makedirs(upload_logs)
+
+corrupted_files = "data/corrupted_files"
 
 for filename in filenames:
     test_dict = {}
@@ -48,8 +53,7 @@ for filename in filenames:
         test_dict['site'] = True
     except Exception as e:
         test_dict['site'] = False
-        test_dict['site_error'] = e 
-
+        logfile.append(f"Site Error: {e}")
     
         # logfile.append('=== Inserting Site Geopol ===')
         # uploader['geopolid'] = nu.insert_geopol(cur = cur,
@@ -68,7 +72,7 @@ for filename in filenames:
         test_dict['collunit'] = True
     except Exception as e:
         test_dict['collunit'] = False
-        test_dict['collunit_error'] = e 
+        logfile.append(f"Collection Unit Error: {e}")
 
     try:
         logfile.append('=== Inserting Analysis Units ===')
@@ -80,7 +84,7 @@ for filename in filenames:
         test_dict['anunits'] = True
     except Exception as e:
         test_dict['anunits'] = False
-        test_dict['aunits_error'] = e 
+        logfile.append(f"Analysis Units Error: {e}")
 
     try:
         logfile.append('=== Inserting Chronology ===')
@@ -92,7 +96,7 @@ for filename in filenames:
         test_dict['chronology'] = True
     except Exception as e:
         test_dict['chronology'] = False
-        test_dict['chronology_error'] = e 
+        logfile.append(f"Chronology Error: {e}")
 
     try:
         logfile.append('=== Inserting Chroncontrol ===')
@@ -104,7 +108,8 @@ for filename in filenames:
         test_dict['chroncontrol'] = True
     except Exception as e:
         test_dict['chroncontrol'] = False
-        test_dict['chroncontrol_error'] = e
+        logfile.append(f"Chroncontrols Error: {e}")
+
 
     try:
         logfile.append('=== Inserting Dataset ===')
@@ -116,7 +121,7 @@ for filename in filenames:
         test_dict['dataset'] = True
     except Exception as e:
         test_dict['dataset'] = False
-        test_dict['dataset_error'] = e
+        logfile.append(f"Dataset Error: {e}")
 
     try:
         logfile.append('=== Inserting Dataset PI ===')
@@ -128,7 +133,8 @@ for filename in filenames:
         test_dict['datasetpi'] = True
     except Exception as e:
         test_dict['datasetpi'] = False
-        test_dict['datasetpi_error'] = e
+        logfile.append(f"Dataset PI Error: {e}")
+
 
     try:
         logfile.append('=== Inserting Data Processor ===')
@@ -140,7 +146,8 @@ for filename in filenames:
         test_dict['processor'] = True
     except Exception as e:
         test_dict['processor'] = False
-        test_dict['processor_error'] = e
+        logfile.append(f"Processor Error: {e}")
+
 
         # Not sure where to get this information from
         # logfile.append('=== Inserting Repository ===')
@@ -159,8 +166,7 @@ for filename in filenames:
         test_dict['database'] = True
     except Exception as e:
         test_dict['database'] = False
-        test_dict['database_error'] = e
-
+        logfile.append(f"Database Error: {e}")
 
     try:
         logfile.append('=== Inserting Samples ===')
@@ -169,11 +175,10 @@ for filename in filenames:
                                             csv_template = csv_template,
                                             uploader = uploader)
         logfile.append(f"Dataset Samples: {uploader['samples']}")
-        #print(uploader['samples'])
         test_dict['samples'] = True
     except Exception as e:
         test_dict['samples'] = False
-        test_dict['samples_error'] = e
+        logfile.append(f"Samples Error: {e}")
 
     try:
         logfile.append('=== Inserting Sample Analyst ===')
@@ -185,7 +190,7 @@ for filename in filenames:
         test_dict['sampleAnalyst'] = True
     except Exception as e:
         test_dict['sampleAnalyst'] = False
-        test_dict['sampleAnalyst_error'] = e 
+        logfile.append(f"Sample Analysts Error: {e}")
 
     try:
         logfile.append('=== Inserting Sample Age ===')
@@ -197,7 +202,7 @@ for filename in filenames:
         test_dict['sampleAge'] = True
     except Exception as e:
         test_dict['sampleAge'] = False
-        test_dict['sampleAge_error'] = e        
+        logfile.append(f"Sample Age Error: {e}")
 
     try:
         logfile.append('=== Inserting Data ===')
@@ -209,23 +214,24 @@ for filename in filenames:
         test_dict['data'] = True
     except Exception as e:
         test_dict['data'] = False
-        test_dict['data_error'] = e
+        logfile.append(f"Data Error: {e}")
 
     with open(filename + '.upload.log', 'w', encoding = "utf-8") as writer:
-                for i in logfile:
-                    writer.write(i)
-                    writer.write('\n')
-    
-    #print(filename, test_dict)
+        for i in logfile:
+            writer.write(i)
+            writer.write('\n')
+
     all_true = all(value for value in test_dict.values())
 
     if all_true:
-        print(filename, "upload")
+        print(f"{filename} was uploaded.")
         #conn.commit()
-        #print(logfile)
         conn.rollback()
     else:
-        print(f"filename {filename} could not be uploaded")
-        print(test_dict)
+        if not os.path.exists(corrupted_files):
+            os.makedirs(corrupted_files)
+        corrupted_path = os.path.join(corrupted_files, os.path.basename(filename))
+        os.replace(filename, corrupted_path)
+        print(f"filename {filename} could not be uploaded.\nMoved {filename} to the 'corrupted_files' folder.")
+
         conn.rollback()
-         
