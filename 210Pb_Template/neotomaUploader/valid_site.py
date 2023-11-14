@@ -1,5 +1,3 @@
-from .retrieveDict import retrieveDict
-from .valid_column import valid_column, cleanColumn
 from .yaml_values import yaml_values
 
 def valid_site(cur, yml_dict, csv_template):
@@ -28,7 +26,7 @@ def valid_site(cur, yml_dict, csv_template):
                 'message': []}
 
     ## Retrieve the fields needed from the yml.
-    coords = yaml_values(yml_dict, csv_template, 'ndb.sites.geom')
+    coords = yaml_values(yml_dict, csv_template, 'ndb.sites.geog')
     try:
         assert len(coords) == 1
     except AssertionError:
@@ -96,8 +94,8 @@ def valid_site(cur, yml_dict, csv_template):
             for i in response['sitelist']:
                 response['message'].append(f"  * siteid: {i['id']};  sitename: {i['name']:<25}; distance (m): {i['distance (m)']:<7} coords: [{i['coordla']}, {i['coordlo']}]")
     else:
-        valid = True
-        sitelist = [{'id': None, 'name': None, 'coordlo': None, 'coordla': None, 'distance (m)': None}]
+        response['valid'] = True
+        response['sitelist'] = [{'id': None, 'name': None, 'coordlo': None, 'coordla': None, 'distance (m)': None}]
         response['matched'] = {'namematch': False, 'distmatch': False}
         response['message'].append('✔  There are no sites close to the proposed site.')
     return response

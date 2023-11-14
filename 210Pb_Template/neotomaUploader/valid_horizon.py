@@ -1,6 +1,7 @@
-from .retrieveDict import retrieveDict
-from .valid_column import valid_column, cleanColumn
-def validHorizon(df, yml_dict, depth_str, horizon_str):
+from .yaml_values import yaml_values
+from .valid_column import valid_column
+
+def valid_horizon(yml_dict, csv_template):
     """_Is the dated horizon one of the accepted dates?_
 
     Args:
@@ -13,15 +14,18 @@ def validHorizon(df, yml_dict, depth_str, horizon_str):
     response = {'pass': False,
                 'index': [],
                 'message': []}
-    depthD = retrieveDict(yml_dict, depth_str)
-    depth_message = valid_column(df, depthD)
-    depths = cleanColumn(df, depthD)
+                           
+    depthD = yaml_values(yml_dict, csv_template, 'ndb.analysisunits.depth')
+    depths =  depthD[0]['values']
+    depth_message = valid_column(depthD[0])
+
     if len(depth_message) >0:
         response['message'].append(depth_message)
 
-    horizonD = retrieveDict(yml_dict, horizon_str)
-    horizon_message = valid_column(df, horizonD)
-    horizon = cleanColumn(df, horizonD)
+    horizonD = yaml_values(yml_dict, csv_template, 'ndb.leadmodels.datinghorizon')
+    horizon = horizonD[0]['values']
+
+    horizon_message = valid_column(horizonD[0])
     if len(horizon_message) >0:
         response['message'].append(horizon_message)
 

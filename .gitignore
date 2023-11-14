@@ -1,3 +1,4 @@
+venv/
 
 connect_remote.json
 
@@ -11,6 +12,14 @@ geospatial/gadm_410.gpkg
 
 210Pb_Template/data/
 data/
+data-toy/
+data-old/
+
+210Pb_Template/data-all/
+210Pb_Template/uncertaintyadditions.html
+.gitignore
+
+uncertaintyadditions_files/
 
 210Pb_Template/neotomaUploader/__pycache__/
 
@@ -19,8 +28,15 @@ ORCID/.httr-oauth
 */*.DS_Store
 *.DS_Store
 
+
+
 */application.log
 **/application.log
 210Pb_Template/.Renviron
 
-210Pb_Template/.env
+.env
+Bulk Uploader Notes.gdoc alias
+.gitignore
+
+.vscode/
+210Pb_Template/output.yml
