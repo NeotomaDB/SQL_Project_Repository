@@ -7,7 +7,7 @@ import neotomaUploader as nu
 
 load_dotenv()
 
-data = json.loads(os.getenv('PGDB_LOCAL2'))
+data = json.loads(os.getenv('PGDB_LOCAL'))
 
 conn = psycopg2.connect(**data, connect_timeout = 5)
 
@@ -225,8 +225,8 @@ for filename in filenames:
 
     if all_true:
         print(f"{filename} was uploaded.")
-        #conn.commit()
-        conn.rollback()
+        conn.commit()
+        #conn.rollback()
     else:
         if not os.path.exists(corrupted_files):
             os.makedirs(corrupted_files)

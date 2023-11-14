@@ -30,15 +30,19 @@ def insert_analysisunit(cur, yml_dict, csv_template, uploader):
     
     params = ["analysisunitname", "depth", "thickness", "faciesid", "mixed", "igsn", "notes"]
     inputs = pull_params(params, yml_dict, csv_template, 'ndb.analysisunits')
-
+   
     anunits = []
     for i, value in enumerate(inputs['depth']):
+        if inputs['mixed'][i] == None:
+            mixed_input = False
+        else:
+            mixed_input = inputs['mixed'][i]
         cur.execute(add_unit, {'collunitid': uploader['collunitid'],
                                 'depth': inputs['depth'][i],
                                 'thickness': inputs['thickness'][i],
-                                'faciesid': 5, #inputs['faciesid'][i],
-                                'mixed': "N", #inputs['mixed'][i],
-                                'igsn': "N", #inputs['igsn'][i],
-                                'notes': "N" })#inputs['notes'][i]})
+                                'faciesid': inputs['faciesid'][i],
+                                'mixed': mixed_input,
+                                'igsn': inputs['igsn'][i],
+                                'notes': inputs['notes'][i]})
         anunits.append(cur.fetchone()[0])
     return anunits
