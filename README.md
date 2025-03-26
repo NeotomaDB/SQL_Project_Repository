@@ -1,3 +1,10 @@
+<!-- badges: start -->
+
+[![lifecycle](https://img.shields.io/badge/lifecycle-active-orange.svg)](https://www.tidyverse.org/lifecycle/#active)
+
+<!-- badges: end -->
+
+
 # SQL_Coding
 
 This repository is intended as a development environment for building new workflows within Neotoma that rely heavily on SQL coding.
